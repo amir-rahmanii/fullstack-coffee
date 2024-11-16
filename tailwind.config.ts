@@ -10,9 +10,17 @@ export default {
 
 	theme: {
 		screens: {
-			tablet: '640px',
-			laptop: '1024px',
-			desktop: '1280px'
+			sm: '640px',
+			// => @media (min-width: 640px) { ... }
+
+			md: '768px',
+			// => @media (min-width: 768px) { ... }
+
+			lg: '1024px',
+			// => @media (min-width: 1024px) { ... }
+
+			xl: '1280px',
+			// => @media (min-width: 1280px) { ... }
 		},
 		extend: {
 			fontFamily: {
@@ -25,6 +33,7 @@ export default {
 				foreground: '#1D1D1B',
 				goldnes: '#E6C498',
 				darknes: '#505049',
+				lightnes: '#F5F5F5',
 				veronese: '#009879'
 			},
 			container: {

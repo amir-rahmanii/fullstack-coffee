@@ -7,11 +7,13 @@ const danaRegular = localFont({
   variable: '--font-dana-Regular',
   display: "swap"
 })
+
 const danaMedium = localFont({
   src: '../../public/fonts/DanaFaNum-Medium.woff2',
   variable: '--font-dana-Medium',
   display: "swap"
 })
+
 const danaBold = localFont({
   src: '../../public/fonts/DanaFaNum-DemiBold.woff2',
   variable: '--font-dana-Bold',

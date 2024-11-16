@@ -6,7 +6,6 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    --font-dana-regular: "DanaFaNum-Regular";
   }
 }
 
@@ -14,22 +13,32 @@
 body {
   color: #1D1D1B;
   background: #FFFFFF;
-  font-family: var(--font-dana-regular); /* Default Fonts */
 }
 
 
-/* width
 ::-webkit-scrollbar {
   width: 6px;
-} */
-
+} 
 /* Track */
-/* ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: #f1f1f1;
-} */
+}
 
 /* Handle */
-/* ::-webkit-scrollbar-thumb {
-  background: #EBB100;
+::-webkit-scrollbar-thumb {
+  background: #009879;
   border-radius: 5px;
-} */
+}
+
+
+/* color selection */
+::selection {
+  background-color: #009879; /* رنگ پس‌زمینه انتخاب */
+  color: white; /* رنگ متن انتخاب‌شده */
+}
+
+/* سفارشی کردن برای موبایل (Webkit) */
+::-moz-selection {
+  background-color: #009879;
+  color: white;
+}
