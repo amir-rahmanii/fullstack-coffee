@@ -47,7 +47,10 @@ export function SearchBar({ side, children }: SearchBarProps) {
         <div className="grid grid-cols-1">
             <Sheet key={side} >
                 <SheetTrigger asChild>
+                    <div className="flex items-center justify-center gap-1">
                     {children}
+                    <p className='text-sm hidden md:block'>جستجو ...</p>
+                    </div>
                 </SheetTrigger>
                 <SheetContent side={side}>
                     <SheetTitle>

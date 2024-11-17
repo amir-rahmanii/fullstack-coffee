@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { pathMenu } from "@/utils/pathMenu"
 
 
 
@@ -45,62 +46,40 @@ export function SideBarMobile({ side, children }: SheetSideProps) {
           {/* Accordion */}
           <div className="grid py-8">
             <Accordion type="single" collapsible className="w-full flex flex-col gap-[18px]">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>محصولات خانگی</AccordionTrigger>
-                <AccordionContent>
-                  نورسکا
-                </AccordionContent>
-                <AccordionContent>
-                  کپسول اسپرسو
-                </AccordionContent>
+              {pathMenu.slice(0, 3).map((menu, index) => (
+                <AccordionItem key={index} value={String(index)}>
+                  <AccordionTrigger>{menu.name}</AccordionTrigger>
 
-                <AccordionContent>
-                  <Accordion type="single" collapsible>
-                    <AccordionItem value="item-1-1" className="px-0">
-                      <AccordionTrigger className="text-darknes pt-0">قهوه اسپرسو</AccordionTrigger>
-                      <AccordionContent>
-                        قهوه ترک
-                      </AccordionContent>
-                      <AccordionContent>
-                        قهوه فرانسه
-                      </AccordionContent>
-                      <AccordionContent>
-                        قهوه ترک
-                      </AccordionContent>
-                      <AccordionContent>
-                        قهوه فرانسه
-                      </AccordionContent>
-                      <AccordionContent>
-                        قهوه ترک
-                      </AccordionContent>
-                      <AccordionContent>
-                        قهوه فرانسه
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </AccordionContent>
-              </AccordionItem>
+                  {menu.subMenu?.map((dataSub, indexSub) => (
+                    <div key={indexSub}>
+                      {dataSub.subMenu ? (
+                        <AccordionContent>
+                          <Accordion type="single" collapsible>
+                            <AccordionItem value="item-1-1" className="px-0">
+                              <AccordionTrigger className="text-darknes pt-0">{dataSub.name}</AccordionTrigger>
+                              {dataSub.subMenu.map((dataSubSub, indexSubSub) => (
+                                <AccordionContent key={indexSubSub}>
+                                  {dataSubSub.name}
+                                </AccordionContent>
+                              ))}
+                            </AccordionItem>
+                          </Accordion>
+                        </AccordionContent>
+                      ) : (
+                        <AccordionContent>
+                          {dataSub.name}
+                        </AccordionContent>
+                      )}
+                    </div>
+                  ))}
 
 
-              <AccordionItem value="item-2">
-                <AccordionTrigger>محصولات هورکا</AccordionTrigger>
-                <AccordionContent>
-                  تخصصی
-                </AccordionContent>
-                <AccordionContent>
-                  ترکیبی
-                </AccordionContent>
-              </AccordionItem>
 
-              <AccordionItem value="item-3">
-                <AccordionTrigger>مجله بن مانو</AccordionTrigger>
-                <AccordionContent>
-                  دانشنامه
-                </AccordionContent>
-                <AccordionContent>
-                  سلامتی
-                </AccordionContent>
-              </AccordionItem>
+                </AccordionItem>
+              ))}
+
+
+
 
               <div className="bg-[#F5F5F5] rounded-lg px-2 py-4 text-sm text-foreground">
                 درباره ما

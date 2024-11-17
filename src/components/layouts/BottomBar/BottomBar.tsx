@@ -8,7 +8,7 @@ import CartSlide from '@/components/template/CartSlide/CartSlide';
 
 function BottomBar() {
     return (
-        <div className='fixed bottom-0 w-full bg-darknes'>
+        <div className='fixed sm:hidden bottom-0 w-full bg-darknes'>
             <div className='flex items-center justify-evenly'>
                 <div className='flex flex-col gap-1 items-center'>
                     <FaRegHeart className='text-background text-2xl' />

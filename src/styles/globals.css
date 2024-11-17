@@ -9,6 +9,13 @@
   }
 }
 
+@layer utilities {
+  .custom-shadow {
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.48);
+    clip-path: inset(0 -100vmax -100vmax -100vmax);
+  }
+}
+
 
 body {
   color: #1D1D1B;

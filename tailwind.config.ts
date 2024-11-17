@@ -69,6 +69,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			spacing: {
+				'calc-vh': "calc(1vh * 100 - 300px)",
 			}
 		}
 	},
