@@ -14,7 +14,7 @@ import HeaderSubMenu from '@/components/modules/HeaderSubMenu/HeaderSubMenu';
 
 function Header() {
   return (
-    <div className='fixed top-0 bg-background w-full pt-2.5 shadow-md rounded-md'>
+    <div className='fixed top-0 z-[9999] bg-background w-full pt-2.5 shadow-md rounded-md'>
       <div className='grid grid-cols-3 xl:grid-cols-5 items-center container'>
         {/* icon hamburger mobile */}
         <div className='flex items-center gap-2.5'>

@@ -9,7 +9,9 @@ export default function Home() {
     <>
       <Header />
       <BottomBar />
-      <Image className="mt-[95px]" width={1530} height={639} src='/images/background-home-page.webp' alt="Background page" />
+      <div className="flex items-center justify-center">
+        <Image className="mt-[95px]" width={1530} height={639} src='/images/background-home-page.webp' alt="Background page" />
+      </div>
       <CoffeeCategories />
     </>
   );
