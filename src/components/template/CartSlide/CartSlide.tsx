@@ -11,7 +11,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { Button } from '@/components/ui/button';
-import CartProduct from '@/components/modules/CartProduct/CartProduct';
+import CartProduct from '@/components/modules/Product/CartProduct/CartProduct';
 
 
 type SheetSideProps = {
@@ -23,7 +23,7 @@ type SheetSideProps = {
 
 export function CartSlide({ side, children }: SheetSideProps) {
     return (
-        <div className="grid grid-cols-1">
+        <div className="grid grid-cols-1 z-50">
             <Sheet key={side}>
                 <SheetTrigger asChild>
                     {children}

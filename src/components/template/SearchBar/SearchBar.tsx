@@ -44,7 +44,7 @@ export function SearchBar({ side, children }: SearchBarProps) {
     }
 
     return (
-        <div className="grid grid-cols-1">
+        <div className="grid grid-cols-1 z-50">
             <Sheet key={side} >
                 <SheetTrigger asChild>
                     <div className="flex items-center justify-center gap-1">

@@ -30,7 +30,7 @@ type SheetSideProps = {
 
 export function SideBarMobile({ side, children }: SheetSideProps) {
   return (
-    <div className="grid grid-cols-1">
+    <div className="grid grid-cols-1 z-50">
       <Sheet key={side}>
         <SheetTrigger asChild>
           {children}

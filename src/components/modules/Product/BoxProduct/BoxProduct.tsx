@@ -11,7 +11,7 @@ function BoxProduct() {
     const [counterProduct, setCounterProduct] = useState(0);
 
     return (
-        <div className='border h-max w-max group transition-all duration-500 border-[#D9D9D9] rounded-2xl overflow-hidden'>
+        <div className='border relative hover:border-goldnes h-max w-max group transition-all duration-500 border-[#D9D9D9] rounded-2xl overflow-hidden'>
             <div className='relative -z-10'>
                 {/* main img */}
                 <Image
@@ -31,6 +31,10 @@ function BoxProduct() {
                     alt='coffee-bean-main-page'
                 />
             </div>
+            {/* offer box */}
+            <div className='bg-red-500 absolute top-0 left-4 p-1 rounded-b-xl'>
+                <p className='text-background'>5%</p>
+            </div>
             {/* body */}
             <div className='px-5'>
                 {/* icon */}
@@ -45,10 +49,17 @@ function BoxProduct() {
 
                 {/* price and counter and go to basket */}
                 <div className='py-5 flex justify-between items-center'>
-                    {/* price */}
-                    <div className='flex items-center gap-1 text-darknes'>
-                        <span>195,565 </span>
-                        <span>تومان</span>
+                    <div>
+                        {/* price offer */}
+                        <div className='flex text-sm items-center line-through gap-1 text-darknes'>
+                            <span>195,565 </span>
+                            <span>تومان</span>
+                        </div>
+                        {/* price */}
+                        <div className='flex items-center gap-1 text-darknes'>
+                            <span>195,565 </span>
+                            <span>تومان</span>
+                        </div>
                     </div>
                     {/* add to shoping cart */}
                     {/* <button className='border cursor-pointer border-veronese p-3 rounded-full'>

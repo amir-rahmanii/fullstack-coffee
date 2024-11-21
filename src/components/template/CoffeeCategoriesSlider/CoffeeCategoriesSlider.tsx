@@ -1,7 +1,7 @@
 "use client";
 
 import { greenSperso } from '@/components/icons/Svg/Svg';
-import BoxProduct from '@/components/modules/BoxProduct/BoxProduct';
+import BoxProduct from '@/components/modules/Product/BoxProduct/BoxProduct';
 import Image from 'next/image';
 import React, { useCallback, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,8 +12,15 @@ import { Navigation } from 'swiper/modules';
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Button } from '@/components/ui/button';
+import CategoryIcons from '@/components/modules/Icons/CategoryIcons/CategoryIcons';
+import WhyHorkaIcons from '@/components/modules/Icons/WhyHorkaIcons/WhyHorkaIcons';
 
-function CoffeeCategories() {
+
+type CoffeeCategoriesProps = {
+    isAboutBonMano: boolean
+}
+
+function CoffeeCategoriesSlider({ isAboutBonMano }: CoffeeCategoriesProps) {
     //َState to manage Active Svg Category
     const [isActiveCategory, setIsActiveCategory] = useState(false);
 
@@ -40,16 +47,26 @@ function CoffeeCategories() {
     };
 
     return (
-        <div className="py-[80px] lg:py-[100px] container lg:flex">
-            {/* Image section */}
-            <div className="hidden lg:block">
-                <Image
-                    width="533"
-                    height="623"
-                    src="/images/categories/coffee-bean-main-page.jpg"
-                    alt="coffee-bean-main-page"
-                />
-            </div>
+        <div className="py-[60px] lg:py-[80px] container flex flex-col gap-[60px] lg:gap-0 lg:justify-between lg:flex-row lg:flex lg:items-center">
+            {isAboutBonMano ? (
+                <div>
+                    <h3 className='text-2xl text-veronese mb-[30px] font-danaMedium'>چرا هورکا بن‌مانو؟</h3>
+                    <div className='flex flex-col gap-6'>
+                        <WhyHorkaIcons />
+                        <WhyHorkaIcons />
+                        <WhyHorkaIcons />
+                    </div>
+                </div>
+            ) : (
+                <div className="hidden lg:block">
+                    <Image
+                        width="533"
+                        height="623"
+                        src="/images/categories/coffee-bean-main-page.jpg"
+                        alt="coffee-bean-main-page"
+                    />
+                </div>
+            )}
 
             {/* Products section */}
             <div className=''>
@@ -62,29 +79,10 @@ function CoffeeCategories() {
                         </p>
                     </div>
                     {/* Icons for category selection */}
+
                     <div className="py-5 flex gap-3 justify-center">
                         {[...Array(3)].map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={changeCategoryHandler}
-                                className="w-14 h-14 p-1 border border-lightnes hover:border-veronese transition-all duration-500 cursor-pointer rounded-full flex justify-center items-center"
-                            >
-                                <div
-                                    className={`${isActiveCategory
-                                        ? 'bg-veronese'
-                                        : 'bg-lightnes'
-                                        } w-full h-full p-3 rounded-full flex justify-center items-center`}
-                                >
-                                    <div
-                                        className={`w-full h-full ${isActiveCategory
-                                            ? 'text-background'
-                                            : 'text-veronese'
-                                            }`}
-                                    >
-                                        {greenSperso}
-                                    </div>
-                                </div>
-                            </button>
+                           <CategoryIcons key={index} isActiveCategory={isActiveCategory} changeCategoryHandler={changeCategoryHandler} />
                         ))}
                     </div>
                 </div>
@@ -96,7 +94,7 @@ function CoffeeCategories() {
                         slidesPerView={1} // Allow automatic sizing of slides based on content
                         modules={[Navigation]}
                         breakpoints={{
-                            400 : {
+                            400: {
                                 slidesPerView: 1.5,
                             },
                             530: {
@@ -121,7 +119,7 @@ function CoffeeCategories() {
                         }}
                     >
                         {[...Array(5)].map((_, index) => (
-                            <SwiperSlide key={index}  className="w-auto min-w-[200px]">
+                            <SwiperSlide key={index} className="w-auto min-w-[200px]">
                                 <BoxProduct />
                             </SwiperSlide>
                         ))}
@@ -152,7 +150,7 @@ function CoffeeCategories() {
                         </div>
                         <div>
                             <Button size="default" variant="default">
-                                    خرید دانه قهوه اسپرسو
+                                خرید دانه قهوه اسپرسو
                             </Button>
                         </div>
                     </div>
@@ -162,4 +160,4 @@ function CoffeeCategories() {
     );
 }
 
-export default CoffeeCategories;
+export default CoffeeCategoriesSlider;

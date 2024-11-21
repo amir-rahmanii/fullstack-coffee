@@ -33,7 +33,7 @@ export default function RootLayout({
 
   
   return (
-    <html lang="en" dir="rtl">
+    <html lang="fa" dir="rtl">
       <body
         className={` font-danaRegular ${danaRegular.variable} ${danaMedium.variable} ${danaBold.variable}`}
       >
