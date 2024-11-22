@@ -15,7 +15,7 @@ import { MdEmail } from "react-icons/md";
 
 function Footer() {
     return (
-        <footer className='bg-[#1D1D1B] pb-[100px] lg:pb-0 mt-[70px] lg:mt-[80px] text-background'>
+        <footer className='bg-[#1D1D1B] pb-[100px] lg:pb-0 mt-[100px] lg:mt-[80px] text-background'>
             <div className='flex flex-col lg:flex-row justify-between items-center gap-5 container'>
 
                 {/* logo ben mano */}

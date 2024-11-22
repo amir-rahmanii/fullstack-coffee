@@ -10,6 +10,7 @@ import { FaRegHeart, FaRegUser } from 'react-icons/fa6';
 import HeaderIcons from '@/components/modules/Icons/HeaderIcons/HeaderIcons';
 import { pathMenu } from '@/utils/pathMenu'
 import HeaderSubMenu from '@/components/modules/HeaderSubMenu/HeaderSubMenu';
+import Link from 'next/link';
 
 
 function Header() {
@@ -73,11 +74,11 @@ function Header() {
 
         <div className='hidden sm:flex items-center justify-end gap-2.5'>
           {/* login  */}
-          <div className='hidden sm:block'>
+          <Link href="/auth/login" className='hidden sm:block'>
             <HeaderIcons>
               <FaRegUser className='text-darknes text-lg' />
             </HeaderIcons>
-          </div>
+          </Link>
 
           {/* basket-card */}
           <div className='hidden sm:block'>

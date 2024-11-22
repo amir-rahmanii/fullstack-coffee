@@ -5,6 +5,7 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { RiShoppingBag3Line } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
 import CartSlide from '@/components/template/CartSlide/CartSlide';
+import Link from 'next/link';
 
 function BottomBar() {
     return (
@@ -21,10 +22,10 @@ function BottomBar() {
                 <div className='flex flex-col items-center bg-veronese border-2 border-background rounded-full p-3 -translate-y-1/2'>
                     <TiHomeOutline className='text-background text-[30px]' />
                 </div>
-                <div className='flex flex-col gap-1 items-center'>
+                <Link href="/auth/login" className='flex flex-col gap-1 items-center'>
                     <FaRegUser className='text-background text-2xl' />
                     <span className='text-background text-xs'>ورود | ثبت نام</span>
-                </div>
+                </Link>
                 <CartSlide side="left">
                     <button className='flex flex-col gap-1 items-center'>
                         <RiShoppingBag3Line className='text-background text-2xl' />
