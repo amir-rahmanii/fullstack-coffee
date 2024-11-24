@@ -1,15 +1,15 @@
-import BottomBar from '@/components/layouts/BottomBar/BottomBar'
-import Footer from '@/components/layouts/Footer/Footer'
-import Header from '@/components/layouts/Header/Header'
+import BottomBar from '@/components/parts/BottomBar/BottomBar'
+import Footer from '@/components/parts/Footer/Footer'
+import Header from '@/components/parts/Header/Header'
 import { BreadcrumbSection } from '@/components/modules/Breadcrumb/Breadcrumb'
 import React from 'react'
 import ProdTagAllProduct from '@/components/template/ProdTagAllProduct/ProdTagAllProduct'
-import SideBarFilter from '@/components/layouts/SideBarFilter/SideBarFilter'
+import SideBarFilter from '@/components/parts/SideBarFilter/SideBarFilter'
+import MainPages from '@/layouts/MainPages'
 
 function ProudTag() {
     return (
-        <>
-            <Header />
+        <MainPages>
             <BreadcrumbSection BreadcrumbPageTitle="محصولات" />
             <div className='container mt-6'>
                 <div className='bg-veronese rounded-2xl py-8'>
@@ -25,9 +25,7 @@ function ProudTag() {
                     <ProdTagAllProduct />
                 </div>
             </div>
-            <BottomBar />
-            <Footer />
-        </>
+        </MainPages>
     )
 }
 

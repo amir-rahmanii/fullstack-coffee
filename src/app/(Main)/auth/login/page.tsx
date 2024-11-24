@@ -1,29 +1,45 @@
 "use client";
 
-import BottomBar from '@/components/layouts/BottomBar/BottomBar';
-import Footer from '@/components/layouts/Footer/Footer';
-import Header from '@/components/layouts/Header/Header';
+import { bonManoIcon } from '@/components/icons/Svg/Svg';
+import BottomBar from '@/components/parts/BottomBar/BottomBar';
+import Footer from '@/components/parts/Footer/Footer';
+import Header from '@/components/parts/Header/Header';
 import { BreadcrumbSection } from '@/components/modules/Breadcrumb/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import signUpSchema from '@/validation/register';
-import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
+import { yupResolver } from '@hookform/resolvers/yup';
+import loginSchema from '@/validation/login';
+import { FaRegEye } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
+import usePostOrPut from '@/hook/usePostOrPut';
 
-function SignUp() {
+export default function Login() {
 
     const [isChangeTypePassword, setIsChangeTypePassword] = useState(true);
+
+        // Hook for POST request to sign up
+        const { mutate, isMutating } = usePostOrPut(
+            '/api/auth/signin', //  API
+            'POST', // method
+            'user logined successfully!' ,// success MSG
+            () => {
+                reset();
+            }
+        );
+
+
 
     // hook form
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(signUpSchema)
+        resolver: yupResolver(loginSchema)
     });
 
 
@@ -31,7 +47,7 @@ function SignUp() {
         <>
             <Header />
             <BottomBar />
-            <BreadcrumbSection BreadcrumbPageTitle="ثبت نام کاربر" />
+            <BreadcrumbSection BreadcrumbPageTitle="ورود" />
             {/* page */}
             <div className='flex flex-col justify-center items-center mt-8'>
                 <div className='border border-[#D9D9D9] py-[30px] px-[20px] md:px-[50px] rounded-3xl '>
@@ -42,29 +58,17 @@ function SignUp() {
                             {/* Phone */}
                             <div className='flex flex-col gap-3'>
                                 <div className="flex flex-col">
-                                    <label htmlFor="username">نام کاربری</label>
+                                    <label htmlFor="identity">نام کاربری یا ایمیل</label>
                                     <Input
                                         required
-                                        {...register("username")}
-                                        className='mt-2 min-w-[300px]'
+                                        {...register("identity")}
+                                        className='mt-2 min-w-[265px]'
                                         dir='ltr'
                                         type="text"
-                                        id="username"
-                                        placeholder="Amirreza" />
-                                </div>
-                                {errors.username && <p className='text-red-500 text-sm'> {errors.username.message}</p>}
-                                <div className="flex flex-col">
-                                    <label htmlFor="email">ایمیل</label>
-                                    <Input
-                                        required
-                                        {...register("email")}
-                                        className='mt-2 min-w-[300px]'
-                                        dir='ltr'
-                                        type="email"
-                                        id="email"
+                                        id="identity"
                                         placeholder="example@gmail.com" />
                                 </div>
-                                {errors.email && <p className='text-red-500 text-sm'> {errors.email.message}</p>}
+                                {errors.identity && <span className='text-red-500 text-sm'> {errors.identity.message}</span>}
                                 <div className="flex flex-col">
                                     <label htmlFor="password">رمز عبور</label>
                                     <div className='flex items-center gap-1 border overflow-hidden rounded-lg h-10'>
@@ -75,7 +79,7 @@ function SignUp() {
                                         <Input
                                             required
                                             {...register("password")}
-                                            className='mt-2 min-w-[300px] border-none'
+                                            className='mt-2 min-w-[265px] border-none'
                                             dir='ltr'
                                             type={isChangeTypePassword ? "password" : "text"}
                                             id="password"
@@ -88,7 +92,7 @@ function SignUp() {
                         {/* login btn */}
                         <div className='flex justify-center mt-8'>
                             <Button onClick={handleSubmit((data) => {
-                                console.log(data);
+                                mutate(data)
                             })} className='rounded-md px-10' variant="default" size="default">
                                 ورود
                             </Button>
@@ -96,13 +100,12 @@ function SignUp() {
                     </form>
                     {/* register */}
                     <div className='mt-12'>
-                        <p className='text-sm text-center text-[#808080]'>قبلا ثبت نام کرده اید ؟ <Link href='/auth/login' className='underline text-[#000000] font-DanaDemiBold'>ورود</Link></p>
+                        <p className='text-sm text-center text-[#808080]'>قبلا ثبت نام نکرده اید ؟ <Link href='/auth/sign-up' className='underline text-[#000000] font-DanaDemiBold'>ثبت نام</Link></p>
                     </div>
                 </div>
             </div >
             <Footer />
         </>
+
     )
 }
-
-export default SignUp

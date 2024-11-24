@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
+import { SWRConfig } from 'swr'
+import { MySWRProvider } from "@/context/swr-provider";
 
 const danaRegular = localFont({
   src: '../../public/fonts/DanaFaNum-Regular.woff2',
@@ -31,13 +33,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  
+
   return (
     <html lang="fa" dir="rtl">
       <body
         className={` font-danaRegular ${danaRegular.variable} ${danaMedium.variable} ${danaBold.variable}`}
       >
-        {children}
+        <MySWRProvider>
+          {children}
+        </MySWRProvider>
       </body>
     </html>
   );
