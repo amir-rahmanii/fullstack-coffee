@@ -45,8 +45,6 @@ export default function Login() {
 
     return (
         <>
-            <Header />
-            <BottomBar />
             <BreadcrumbSection BreadcrumbPageTitle="ورود" />
             {/* page */}
             <div className='flex flex-col justify-center items-center mt-8'>
@@ -104,7 +102,6 @@ export default function Login() {
                     </div>
                 </div>
             </div >
-            <Footer />
         </>
 
     )

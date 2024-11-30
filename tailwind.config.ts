@@ -34,7 +34,15 @@ export default {
 				goldnes: '#E6C498',
 				darknes: '#505049',
 				lightnes: '#F5F5F5',
-				veronese: '#009879'
+				veronese: '#009879',
+				admin: {
+					navy: "#24303F",
+					black: "#1A222C",
+					low: "#dee4ee",
+					High: "#8a99af",
+					plus: "#10B981",
+					minus: "#259AE6",
+				}
 			},
 			container: {
 				center: true,

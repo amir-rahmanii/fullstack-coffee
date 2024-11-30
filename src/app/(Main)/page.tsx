@@ -1,13 +1,12 @@
-import CoffeeCategoriesSlider from "@/components/template/CoffeeCategoriesSlider/CoffeeCategoriesSlider";
-import MagazineSlider from "@/components/template/MagazineSlider/MagazineSlider";
-import { Button } from "@/components/ui/button";
-import MainPages from "@/layouts/MainPages";
-import Image from "next/image";
+import CoffeeCategoriesSlider from '@/components/template/CoffeeCategoriesSlider/CoffeeCategoriesSlider'
+import MagazineSlider from '@/components/template/MagazineSlider/MagazineSlider'
+import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import React from 'react'
 
-
-export default function Home() {
+function PageMain() {
   return (
-    <MainPages>
+    <>
         {/* img */}
         <div className="flex items-center justify-center">
           <Image className="mt-[95px]" width={1530} height={639} src='/images/background-home-page.webp' alt="Background page" />
@@ -34,6 +33,8 @@ export default function Home() {
         </div>
         <CoffeeCategoriesSlider isAboutBonMano={true} />
         <MagazineSlider />
-    </MainPages>
-  );
+    </>
+  )
 }
+
+export default PageMain

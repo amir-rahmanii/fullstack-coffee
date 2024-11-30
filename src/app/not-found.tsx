@@ -4,14 +4,15 @@ import Footer from '@/components/parts/Footer/Footer'
 import Header from '@/components/parts/Header/Header';
 import { BreadcrumbSection } from '@/components/modules/Breadcrumb/Breadcrumb';
 import { Button } from '@/components/ui/button';
-import MainPages from '@/layouts/MainPages';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
 function NotFound() {
     return (
-        <MainPages>
+        <>
+            <Header />
+            <BottomBar />
             <BreadcrumbSection BreadcrumbPageTitle="صفحه 404" />
             <div className='container pt-8'>
                 <Image width={1500} height={500} src="/images/404.webp" alt='404' />
@@ -27,7 +28,8 @@ function NotFound() {
                     </div>
                 </div>
             </div>
-        </MainPages>
+            <Footer />
+        </>
     )
 }
 

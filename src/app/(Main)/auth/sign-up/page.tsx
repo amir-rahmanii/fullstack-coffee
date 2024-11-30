@@ -1,8 +1,5 @@
 "use client";
 
-import BottomBar from '@/components/parts/BottomBar/BottomBar';
-import Footer from '@/components/parts/Footer/Footer';
-import Header from '@/components/parts/Header/Header';
 import { BreadcrumbSection } from '@/components/modules/Breadcrumb/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,8 +33,6 @@ function SignUp() {
 
     return (
         <>
-            <Header />
-            <BottomBar />
             <BreadcrumbSection BreadcrumbPageTitle="ثبت نام کاربر" />
             <div className='flex flex-col justify-center items-center mt-8'>
                 <div className='border border-[#D9D9D9] py-[30px] px-[20px] md:px-[50px] rounded-3xl '>
@@ -106,7 +101,6 @@ function SignUp() {
                     </div>
                 </div>
             </div>
-            <Footer />
         </>
     );
 }
