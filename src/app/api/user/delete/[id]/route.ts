@@ -4,39 +4,50 @@ import { NextRequest } from "next/server"; // نوع درخواست Next.js
 import { cookies } from "next/headers"; // مدیریت کوکی‌ها
 import { verifyToken } from "@/utils/auth";
 
-export const GET = async (req: NextRequest) => {
+export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
     try {
         // اتصال به دیتابیس
         await connectToDB();
 
-        const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
+        const { id } = params;
 
+
+        const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
         const accessToken = cookieStore.get('accessToken')?.value;
 
-        // بررسی وجود توکن
+        // بررسی توکن
         if (!accessToken) {
             return Response.json({ message: "شما وارد سیستم نشده‌اید" }, { status: 401 });
         }
 
-        const verifyUser = verifyToken(accessToken);
+        const verifiedUser = await verifyToken(accessToken); // استفاده از await برای اعتبارسنجی توکن
 
-        // بررسی اعتبار توکن
-        if (!verifyUser) {
+        // اگر توکن معتبر نیست
+        if (!verifiedUser) {
             return Response.json({ message: "توکن نامعتبر است" }, { status: 401 });
         }
 
-        const userDetails = await UserModel.findOne({ email: verifyUser.email }, "-password -__v -updatedAt");
+        // جستجو کاربر با ایمیل verified
+        const userDetails = await UserModel.findOne({ email: verifiedUser.email }, "-password -__v -updatedAt");
 
         // بررسی نقش کاربر
         if (userDetails?.role !== "ADMIN") {
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        // دریافت تمام کاربران
-        const allUser = await UserModel.find({}, "-password -__v -updatedAt");
+        // حذف کاربر از دیتابیس
+        const deletedUser = await UserModel.findOneAndDelete({ _id: id });
+
+        // اگر کاربر یافت نشد
+        if (!deletedUser) {
+            return Response.json({ message: "کاربر یافت نشد" }, { status: 404 });
+        }
 
         // بازگشت پاسخ موفقیت‌آمیز
-        return Response.json(allUser, { status: 200 });
+        return Response.json(
+            { message: "کاربر با موفقیت حذف شد" },
+            { status: 200 }
+        );
     } catch (err) {
         // مدیریت خطای داخلی
         console.error(err); // چاپ خطا در کنسول برای بررسی بیشتر

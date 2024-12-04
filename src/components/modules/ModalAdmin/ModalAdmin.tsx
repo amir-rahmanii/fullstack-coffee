@@ -1,16 +1,15 @@
 import React from 'react'
+import { Button } from "@/components/ui/button"
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { closeIcon } from '@/components/icons/Svg/Svg'
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import Image from 'next/image'
 
 type ModalProps = {
@@ -20,48 +19,42 @@ type ModalProps = {
     btnYesTitle?: string,
     isAttention?: boolean,
     isYesOrNo?: boolean,
+    description?: string,
     children?: React.ReactNode
 }
 
 function ModalAdmin({
     isAttention,
     children,
-    isYesOrNo,
+    description,
     title,
-    btnNoTitle,
-    btnYesTitle,
     submitHandler
 }: ModalProps) {
     return (
-        <AlertDialog>
-            <AlertDialogTrigger asChild>
+        <Dialog>
+            <DialogTrigger asChild>
                 {children}
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-                <div className='flex justify-end'>
-                    <AlertDialogCancel>
-                        <button className='flex p-1'>
-                            {closeIcon}
-                        </button>
-                    </AlertDialogCancel>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>{title}</DialogTitle>
+                    <DialogDescription>
+                        {description}
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-center items-center">
+                    {isAttention && (
+                        <Image src={'/images/attention.png'} alt='attention' width={120} height={50} />
+                    )}
                 </div>
-                <AlertDialogHeader>
-                    <div className='flex justify-center items-center'>
-                        {isAttention && (
-                            <Image className='rounded-xl' alt='attention' width={120} height={50} src="/images/attention.png" />
-                        )}
-                    </div>
-                    <AlertDialogTitle>بیسبیسبیب</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        سشیتسشیتاسشنیاسنشتی
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>لغو</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+                <DialogFooter>
+                    <Button className='w-full rounded-xl' variant="default" size='default' type="submit" onClick={submitHandler}>تایید</Button>
+                    <DialogClose asChild>
+                        <Button className='w-full rounded-xl' variant="destructive" size='default'>لغو</Button>
+                    </DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
 

@@ -10,6 +10,7 @@ import Image from 'next/image';
 import ModalAdmin from '@/components/modules/ModalAdmin/ModalAdmin';
 import useSWR from 'swr';
 import UserType from '@/types/user.types';
+import { useDelete } from '@/hook/useDelete';
 
 
 
@@ -33,13 +34,23 @@ export default function Users() {
     const [filteredData, setFilteredData] = useState<null>(null)
 
 
-
     // get all users
-    const { data : allUsers } = useSWR<UserType[]>('/api/user/all');
+    const { data: allUsers } = useSWR<UserType[]>('/api/user/all');
 
 
-    console.log(allUsers);
-    
+
+    const { deleteItem } = useDelete("/api/user/delete", {
+        onSuccess: () => alert("Item deleted successfully!"),
+        onError: (error) => alert(`Error: ${error.message}`),
+    });
+
+
+
+    const handleDeleteUser = async (id: string | number) => {
+        await deleteItem(id);
+    };
+
+
 
 
     return (
@@ -57,27 +68,32 @@ export default function Users() {
                     </div>
                     <TableAdmin columns={columns}>
                         <tbody className='h-[200px] overflow-auto' >
-                            {allUsers?.map((user , index) => (
-                            <tr key={user._id} className={`border-y text-sm even:bg-[#313D4A] text-center border-[#2e3a47]`}>
-                                <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
-                                <td className='py-[18px]  px-2 lg:px-1'>
-                                    <div className='flex items-center gap-2 justify-center'>
-                                        {user.username}
-                                    </div>
-                                </td>
-                                <td className='py-[18px]  px-2 lg:px-1'>{user.email}</td>
-                                <td className='py-[18px]  px-2 lg:px-1'>{user.role === "ADMIN" ? "ادمین" : "کاربر"}</td>
-                                <td className='py-[18px]  px-2 lg:px-1'>{new Date(user.createdAt).toLocaleDateString('fa-IR')}</td>
-                                <td className='py-[18px]  px-2 lg:px-1'>
-                                    <div className='flex items-center justify-center gap-2'>
-                                        <ModalAdmin
-                                            isAttention={true}
-                                        >
-                                            <button className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-yellow-400 transition-all duration-300`}>{eyeIcon}</button>
-                                        </ModalAdmin>
-                                    </div>
-                                </td>
-                            </tr>
+                            {allUsers?.map((user, index) => (
+                                <tr key={user._id} className={`border-y text-sm even:bg-[#313D4A] text-center border-[#2e3a47]`}>
+                                    <td className='py-[18px]  px-2 lg:px-1'>{index + 1}</td>
+                                    <td className='py-[18px]  px-2 lg:px-1'>
+                                        <div className='flex items-center gap-2 justify-center'>
+                                            {user.username}
+                                        </div>
+                                    </td>
+                                    <td className='py-[18px]  px-2 lg:px-1'>{user.email}</td>
+                                    <td className='py-[18px]  px-2 lg:px-1'>{user.role === "ADMIN" ? "ادمین" : "کاربر"}</td>
+                                    <td className='py-[18px]  px-2 lg:px-1'>{new Date(user.createdAt).toLocaleDateString('fa-IR')}</td>
+                                    <td className='py-[18px]  px-2 lg:px-1'>
+                                        <div className='flex items-center justify-center gap-2'>
+                                            {user.username !== "Amirreza" && (
+                                                <ModalAdmin
+                                                    isAttention={true}
+                                                    submitHandler={() => handleDeleteUser(user._id)}
+                                                    title="حذف کاربر"
+                                                    description={`آیا مایل به حذف ${user.username} هستید`}
+                                                >
+                                                    <button className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-red-400 transition-all duration-300`}>{deleteIcon}</button>
+                                                </ModalAdmin>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
                             ))}
                         </tbody>
                     </TableAdmin>
