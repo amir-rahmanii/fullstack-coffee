@@ -15,8 +15,6 @@ import Image from 'next/image'
 type ModalProps = {
     title?: string,
     submitHandler?: () => void,
-    btnNoTitle?: string,
-    btnYesTitle?: string,
     isAttention?: boolean,
     isYesOrNo?: boolean,
     description?: string,

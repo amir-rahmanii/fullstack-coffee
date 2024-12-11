@@ -8,7 +8,7 @@ import ModalAdmin from "@/components/modules/ModalAdmin/ModalAdmin";
 import { searchIcon, deleteIcon } from "@/components/icons/Svg/Svg";
 import UserType from "@/types/user.types";
 import { useDelete } from "@/hook/useDelete";
-import useQueryString from "@/utils/createQueryString";
+import AddCategoryProductAdmin from "@/components/template/AddCategoryProductAdmin/AddCategoryProductAdmin";
 
 export default function Users() {
   const columns: string[] = [
@@ -21,13 +21,23 @@ export default function Users() {
   ];
 
   const [searchValue, setSearchValue] = useState("");
-  const { updateQueryString } = useQueryString();
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentSearch = searchParams?.get("search") || "";
+
+  // ساخت Query String برای جستجو
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams?.toString());
+      params.set(name, value);
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   // دریافت کاربران با استفاده از SWR
   const { data: users, mutate } = useSWR<UserType[]>(
-    `/api/user/all?search=${currentSearch}`
+    `/api/user/all?search=${searchParams?.get("search") || ""}`
   );
 
   const { deleteItem } = useDelete("/api/user/delete", {
@@ -44,13 +54,14 @@ export default function Users() {
 
   // هندلر جستجو
   const handleSearch = () => {
-    updateQueryString("search", searchValue);
+    router.push(pathname + "?" + createQueryString("search", searchValue));
   };
 
   return (
     <div className="font-sans grid overflow-auto max-w-[710px] md:max-w-full md:w-full">
+      <AddCategoryProductAdmin />
       <div className="bg-admin-navy rounded">
-        <h3 className="text-xl px-6 pt-6 font-danaBold">کاربران</h3>
+        <h3 className="text-xl px-6 pt-6 font-danaBold">محصولات</h3>
         <div className="px-6 pt-6 flex justify-end items-center">
           <form
             className="flex items-center gap-4"

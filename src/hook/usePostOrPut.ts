@@ -1,21 +1,27 @@
 import useSWRMutation from 'swr/mutation';
 
-
 const usePostOrPut = (
     url: string,
     method: 'PUT' | 'POST',
     successMsg: string | null,
-    successFunc : () => void
+    successFunc: () => void,
+    formdata: boolean = false // گزینه جدید برای تعیین نوع درخواست
 ) => {
     // تعریف تابع ارسال درخواست
     const sendRequest = async (url: string, { arg }: { arg: any }) => {
-        const response = await fetch(url, {
+        const options: RequestInit = {
             method,
-            headers: {
+            body: formdata ? arg : JSON.stringify(arg), // اگر formdata باشد، داده خام ارسال می‌شود
+        };
+
+        // اگر formdata نباشد، هدر اضافه شود
+        if (!formdata) {
+            options.headers = {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(arg),
-        });
+            };
+        }
+
+        const response = await fetch(url, options);
 
         if (!response.ok) {
             const errorData = await response.json();
@@ -32,11 +38,11 @@ const usePostOrPut = (
     const mutate = async (data: any) => {
         try {
             await trigger(data);
-            if(successMsg){
+            if (successMsg) {
                 console.log(successMsg);
             }
-            if(successFunc){
-                successFunc()
+            if (successFunc) {
+                successFunc();
             }
         } catch (err: any) {
             console.log(err.message || 'Something went wrong');

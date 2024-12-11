@@ -1,19 +1,18 @@
-import UserModel from "@/models/user"; // مدل کاربر
-import connectToDB from "@/configs/db"; // متصل شدن به دیتابیس
-import { NextRequest } from "next/server"; // نوع درخواست Next.js
-import { cookies } from "next/headers"; // مدیریت کوکی‌ها
+import connectToDB from "@/configs/db";
 import { verifyToken } from "@/utils/auth";
+import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
+import UserModel from "@/models/user";
+import categoryProductModel from "@/models/categoryProducts";
 
-export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = async (req: NextRequest) => {
     try {
         // اتصال به دیتابیس
         await connectToDB();
 
-        const { id } = params;
-
-
         const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
         const accessToken = cookieStore.get('accessToken')?.value;
+        // دریافت فایل‌ها از درخواست (با استفاده از async/await)
 
         // بررسی توکن
         if (!accessToken) {
@@ -35,17 +34,14 @@ export const DELETE = async (req: NextRequest, { params }: { params: { id: strin
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        // حذف کاربر از دیتابیس
-        const deletedUser = await UserModel.findOneAndDelete({ _id: id });
 
-        // اگر کاربر یافت نشد
-        if (!deletedUser) {
-            return Response.json({ message: "کاربر یافت نشد" }, { status: 404 });
-        }
+        const allCategoryProduct = await categoryProductModel.find({}, "-__v -updatedAt")
+
+
 
         // بازگشت پاسخ موفقیت‌آمیز
         return Response.json(
-            { message: "کاربر با موفقیت حذف شد" },
+            allCategoryProduct,
             { status: 200 }
         );
     } catch (err) {
