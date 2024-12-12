@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import TableAdmin from "@/components/modules/TableAdmin/TableAdmin";
-import ModalAdmin from "@/components/modules/ModalAdmin/ModalAdmin";
+import ModalYesOrNoAdmin from "@/components/modules/Modal/ModalYesOrNoAdmin/ModalYesOrNoAdmin";
 import { searchIcon, deleteIcon } from "@/components/icons/Svg/Svg";
 import UserType from "@/types/user.types";
 import { useDelete } from "@/hook/useDelete";
@@ -109,7 +109,7 @@ export default function Users() {
                 <td className="py-[18px]  px-2 lg:px-1">
                   <div className="flex items-center justify-center gap-2">
                     {user.username !== "Amirreza" && (
-                      <ModalAdmin
+                      <ModalYesOrNoAdmin
                         isAttention={true}
                         submitHandler={() => handleDeleteUser(user._id)}
                         title="حذف کاربر"
@@ -120,7 +120,7 @@ export default function Users() {
                         >
                           {deleteIcon}
                         </button>
-                      </ModalAdmin>
+                      </ModalYesOrNoAdmin>
                     )}
                   </div>
                 </td>

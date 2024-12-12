@@ -16,11 +16,12 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import CategoryProductType from '@/types/categoryProduct.types';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import usePostOrPut from '@/hook/usePostOrPut';
 import AddProductTypes from '@/types/addProduct.types';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { useSearchParams } from 'next/navigation';
 
 function AddProductAdmin() {
 
@@ -32,8 +33,10 @@ function AddProductAdmin() {
         `/api/category-product/getAll`
     );
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const { mutate } = useSWRConfig();
 
-    const { mutate } = usePostOrPut(
+    const { mutate : mutateAddProduct } = usePostOrPut(
         '/api/product/create', //  API
         'POST', // method
         'product created successfully!',// success MSG
@@ -42,6 +45,7 @@ function AddProductAdmin() {
             setImagesPreview([null, null]);
             setSelectedCategory(null)
             reset();
+            mutate(`/api/product/getAll?search=${searchParams?.get("search") || ""}&sort=${searchParams?.get("sort") || "latest"}&stock=${searchParams?.get("stock") || "0"}`)
         },
         true
     );
@@ -162,7 +166,7 @@ function AddProductAdmin() {
 
         imagesFile.forEach((file) => formData.append("images", file));
 
-        mutate(formData); // ارسال درخواست
+        mutateAddProduct(formData); // ارسال درخواست
     };
 
 

@@ -466,3 +466,44 @@ export const deleteIcon = <svg fill="currentColor" viewBox="0 0 24 24" xmlns="ht
 export const searchIcon = <svg aria-label="Search" color="currentColor" fill="currentColor" role="img" viewBox="0 0 24 24"><path d="M19 10.5A8.5 8.5 0 1110.5 2a8.5 8.5 0 018.5 8.5z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path><line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="16.511" x2="22" y1="16.511" y2="22"></line></svg>
 
 
+export const updateIcon =
+    <svg
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon flat-line"
+    >
+      <path
+        d="M4,12A8,8,0,0,1,18.93,8"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      ></path>
+      <path
+        d="M20,12A8,8,0,0,1,5.07,16"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      ></path>
+      <polyline
+        points="14 8 19 8 19 3"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      ></polyline>
+      <polyline
+        points="10 16 5 16 5 21"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      ></polyline>
+    </svg>;
+

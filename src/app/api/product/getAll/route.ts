@@ -9,46 +9,52 @@ export const GET = async (req: NextRequest) => {
         // اتصال به دیتابیس
         await connectToDB();
 
-        const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
+        const cookieStore = await cookies();
         const accessToken = cookieStore.get('accessToken')?.value;
-        // دریافت فایل‌ها از درخواست (با استفاده از async/await)
-
-
-        const searchQuery = req.nextUrl.searchParams.get("search") || "";
-
 
         // بررسی توکن
         if (!accessToken) {
             return Response.json({ message: "شما وارد سیستم نشده‌اید" }, { status: 401 });
         }
 
-        const verifiedUser = verifyToken(accessToken); // استفاده از await برای اعتبارسنجی توکن
-
-        // اگر توکن معتبر نیست
+        const verifiedUser = verifyToken(accessToken);
         if (!verifiedUser) {
             return Response.json({ message: "توکن نامعتبر است" }, { status: 401 });
         }
 
-        const filterCondition = searchQuery
-        ? {
-              $or: [
-                  { title: { $regex: searchQuery, $options: "i" } },
-              ],
-          }
-        : {};
+        // پارامترهای فیلترینگ
+        const searchQuery = req.nextUrl.searchParams.get("search") || "";
+        const sortQuery = req.nextUrl.searchParams.get("sort") || "latest";
+        const stockQuery = req.nextUrl.searchParams.get("stock") || "0";
 
+        // ایجاد شرط‌های فیلترینگ
+        const filterCondition = {
+            ...(searchQuery && {
+                $or: [
+                    { title: { $regex: searchQuery, $options: "i" } },
+                    { description: { $regex: searchQuery, $options: "i" } },
+                ],
+            }),
+            ...(stockQuery === "1" && { stock: { $gt: 0 } }),
+        }; // اگر stock=0 باشد، شرطی اضافه نمی‌شود و همه محصولات نمایش داده می‌شوند.
 
-        const allProduct = await ProductModel.find(filterCondition, "-__v -updatedAt")
-        .populate("category"); 
+        // مرتب‌سازی
+        const sortCondition =
+            sortQuery === "price"
+                ? { price: 1 } // قیمت صعودی
+                : sortQuery === "price-desc"
+                ? { price: -1 } // قیمت نزولی
+                : { createdAt: -1 }; // پیش‌فرض: جدیدترین محصولات
 
+        // واکشی محصولات
+        const allProducts = await ProductModel.find(filterCondition, "-__v -updatedAt")
+            .sort(sortCondition)
+            .populate("category");
 
-
-        // بازگشت پاسخ موفقیت‌آمیز
-        return Response.json(
-            allProduct,
-            { status: 200 }
-        );
+        // بازگشت محصولات
+        return Response.json(allProducts, { status: 200 });
     } catch (err) {
+        console.error("خطا در دریافت محصولات:", err);
         return Response.json(
             { message: "خطای داخلی ناشناخته رخ داده است" },
             { status: 500 }

@@ -10,7 +10,7 @@ import path from 'path';
 
 const saveFiles = async (files: Buffer[], filenames: string[]) => {
     const uploadDir = path.join(process.cwd(), 'public/uploads/products');
-    
+
     if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -18,7 +18,7 @@ const saveFiles = async (files: Buffer[], filenames: string[]) => {
     const filePaths = filenames.map((filename, index) => {
         const filePath = path.join(uploadDir, filename);
         fs.writeFileSync(filePath, files[index]);
-        return `${filename}`;
+        return `/uploads/products/${filename}`;
     });
 
     return filePaths;
@@ -63,6 +63,8 @@ export const POST = async (req: NextRequest) => {
         // دریافت فایل‌ها به صورت Buffer
         const images = formData.getAll("images");
 
+  
+
         if (images.length < 2) {
             return Response.json({ message: "لطفاً دو تصویر انتخاب کنید" }, { status: 400 });
         }
@@ -81,16 +83,18 @@ export const POST = async (req: NextRequest) => {
 
         const imageUrls = await saveFiles(filesBuffer, filenames);
 
+        const priceWithDiscount = (+price * (100 - +discount)) / 100;
 
 
         await ProductModel.create({
             title,
-            price,
-            discount,
+            price: +price,
+            discount: +discount,
             category,
             description,
-            weight,
-            stock,
+            priceWithDiscount,
+            weight: +weight,
+            stock: +stock,
             images: imageUrls,
         });
 

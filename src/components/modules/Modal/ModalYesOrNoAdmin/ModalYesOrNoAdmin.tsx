@@ -21,7 +21,7 @@ type ModalProps = {
     children?: React.ReactNode
 }
 
-function ModalAdmin({
+function ModalYesOrNoAdmin({
     isAttention,
     children,
     description,
@@ -56,4 +56,4 @@ function ModalAdmin({
     )
 }
 
-export default ModalAdmin
+export default ModalYesOrNoAdmin

@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import TableAdmin from "@/components/modules/TableAdmin/TableAdmin";
-import ModalAdmin from "@/components/modules/ModalAdmin/ModalAdmin";
-import { searchIcon, deleteIcon } from "@/components/icons/Svg/Svg";
+import ModalYesOrNoAdmin from "@/components/modules/Modal/ModalYesOrNoAdmin/ModalYesOrNoAdmin";
+import { searchIcon, deleteIcon, eyeIcon, updateIcon } from "@/components/icons/Svg/Svg";
 import ProductTypes from "@/types/product.types";
 import { useDelete } from "@/hook/useDelete";
 import AddProductAdmin from "@/components/template/AddProductAdmin/AddProductAdmin";
@@ -13,6 +13,10 @@ import useQueryString from "@/utils/createQueryString";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import Image from "next/image";
+import UpdateProductAdmin from "@/components/template/UpdateProductAdmin/UpdateProductAdmin";
+
 
 export default function Products() {
   const columns: string[] = [
@@ -20,22 +24,30 @@ export default function Products() {
     "نام محصول",
     "دسته بندی",
     "قیمت",
+    "وضعیت",
     "تاریخ ایجاد",
     "عملیات",
   ];
 
   const { updateQueryString } = useQueryString();
   const searchParams = useSearchParams();
-  const currentSearch = searchParams?.get("search") || "";
   const [searchValue, setSearchValue] = useState<string>(
     searchParams?.get("search") || ""
   );
-  const [sortedValue] = useState(searchParams?.get("sort") || "")
+  const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
 
-  // دریافت محصولات
+
   const { data: products, error, mutate } = useSWR<ProductTypes[]>(
-    `/api/product/getAll?search=${currentSearch}`
+    `/api/product/getAll?search=${searchParams?.get("search") || ""}&sort=${searchParams?.get("sort") || "latest"}&stock=${searchParams?.get("stock") || "0"}`
   );
+
+  useEffect(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight, // انتقال به انتهای صفحه
+      behavior: "smooth", // انیمیشن نرم
+    });
+  }, [searchParams]); // هر زمان که searchParams تغییر کند
+
 
   const { deleteItem } = useDelete("/api/product/delete", {
     onSuccess: () => {
@@ -52,9 +64,13 @@ export default function Products() {
   const handleSearch = () => {
     updateQueryString("search", searchValue);
   };
-  
-  const valueSelectedSortHandler = (value : string) => {
+
+  const valueSelectedSortHandler = (value: string) => {
     updateQueryString("sort", value);
+  }
+
+  const isStockHandler = (value: boolean) => {
+    updateQueryString("stock", value ? "1" : "0");
   }
 
   return (
@@ -86,7 +102,7 @@ export default function Products() {
             />
           </form>
           <div className='flex gap-6 items-center'>
-            <Select defaultValue={sortedValue} onValueChange={valueSelectedSortHandler}>
+            <Select defaultValue={searchParams?.get("sort") || "latest"} onValueChange={valueSelectedSortHandler}>
               <SelectTrigger className="w-[280px] text-foreground">
                 <SelectValue placeholder="مرتب سازی را انتخاب کنید" />
               </SelectTrigger>
@@ -100,7 +116,7 @@ export default function Products() {
             </Select>
             <div className="flex items-center px-4 gap-6 border h-12 rounded-md border-neutral-200">
               <Label htmlFor="airplane-mode">فقط کالاهای موجود</Label>
-              <Switch dir='ltr' id="airplane-mode" />
+              <Switch defaultChecked={searchParams?.get("stock") === "1" ? true : false} onCheckedChange={isStockHandler} dir='ltr' id="airplane-mode" />
             </div>
           </div>
         </div>
@@ -114,13 +130,49 @@ export default function Products() {
                 <td className="py-[18px] px-2 lg:px-1">{index + 1}</td>
                 <td className="py-[18px] px-2 lg:px-1">{product.title}</td>
                 <td className="py-[18px] px-2 lg:px-1">{product.category.title}</td>
-                <td className="py-[18px] px-2 lg:px-1">{product.price}</td>
+                <td className="py-[18px] px-2 lg:px-1">{Number(product.priceWithDiscount).toLocaleString("fa-IR")} تومان</td>
+                <td className="py-[18px] px-2 lg:px-1">{product.stock ? "موجود" : "ناموجود"}</td>
                 <td className="py-[18px] px-2 lg:px-1">
                   {new Date(product.createdAt).toLocaleDateString("fa-IR")}
                 </td>
                 <td className="py-[18px] px-2 lg:px-1">
                   <div className="flex items-center justify-center gap-2">
-                    <ModalAdmin
+                    {/* data product */}
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button
+                          className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-green-400 transition-all duration-300`}
+                        >
+                          {eyeIcon}
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>اطلاعات محصول</DialogTitle>
+                        </DialogHeader>
+
+                        <div className="flex items-center gap-6 flex-col lg:flex-row">
+                          {product.images.map((img, index) => (
+                            <div key={index} className="w-full h-full">
+                              <Image className="w-full h-full object-cover rounded" width="480" height="140" alt={`img ${index}`} src={img} />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 child:text-center">
+                          <p>نام محصول : {product.title}</p>
+                          <p> دسته بندی: {product.category.title}</p>
+                          <p>قیمت بدون تخفیف :  {Number(product.price).toLocaleString("fa-IR")} تومان</p>
+                          <p>درصد تخفیف : {product.discount} %</p>
+                          <p> قیمت با تخفیف : {Number(product.priceWithDiscount).toLocaleString("fa-IR")} تومان</p>
+                          <p>وزن : {product.weight} گرم</p>
+                          <p>وضعیت موجودی : {product.stock ? "موجود" : "ناموجود"}</p>
+                          <p> تاریخ ایجاد :   {new Date(product.createdAt).toLocaleDateString("fa-IR")}</p>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+
+                    {/* delete product */}
+                    <ModalYesOrNoAdmin
                       isAttention={true}
                       submitHandler={() => handleDeleteProduct(product._id)}
                       title="حذف محصول"
@@ -131,7 +183,25 @@ export default function Products() {
                       >
                         {deleteIcon}
                       </button>
-                    </ModalAdmin>
+                    </ModalYesOrNoAdmin>
+
+                    {/* update product */}
+                    <Dialog open={isOpenUpdateModal} onOpenChange={setIsOpenUpdateModal}>
+                      <DialogTrigger asChild>
+                        <button
+                          className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-orange-400 transition-all duration-300`}
+                        >
+                          {updateIcon}
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>ویرایش محصول</DialogTitle>
+                        </DialogHeader>
+
+                        <UpdateProductAdmin setIsOpenUpdateModal={setIsOpenUpdateModal} product={product} />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </td>
               </tr>

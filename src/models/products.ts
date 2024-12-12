@@ -7,7 +7,12 @@ const productSchema = new mongoose.Schema(
       required: [true, "عنوان محصول الزامی است"],
     },
     price: {
-      type: String,
+      type: Number,
+      required: [true, "قیمت محصول الزامی است"],
+      min: [0, "قیمت نمی‌تواند منفی باشد"],
+    },
+    priceWithDiscount : {
+      type: Number,
       required: [true, "قیمت محصول الزامی است"],
       min: [0, "قیمت نمی‌تواند منفی باشد"],
     },
@@ -17,7 +22,7 @@ const productSchema = new mongoose.Schema(
       required: [true, "دسته‌بندی محصول الزامی است"],
     },
     discount: {
-      type: String,
+      type: Number,
       required: [true, "تخفیف محصول الزامی است"],
       min: [0, "تخفیف نمی‌تواند منفی باشد"],
       max: [100, "تخفیف نمی‌تواند بالا تر از 100 باشد"]
@@ -27,15 +32,15 @@ const productSchema = new mongoose.Schema(
       required: [true, "توضیحات محصول الزامی است"],
     },
     weight: {
-      type: String,
+      type: Number,
       required: [true, "وزن محصول الزامی است"],
       min: [0, "وزن نمی‌تواند منفی باشد"],
     },
     stock: {
-      type: String,
+      type: Number,
       required: [true, " وضعیت موجودی الزامی است."],
-      enum: ["0", "1"], // محدود به نقش‌های مشخص
-      default: "1",
+      enum: [0, 1], // محدود به نقش‌های مشخص
+      default: 1,
     },
     images: {
       type: [String],
