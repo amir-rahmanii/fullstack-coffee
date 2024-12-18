@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import TableAdmin from "@/components/modules/TableAdmin/TableAdmin";
 import ModalYesOrNoAdmin from "@/components/modules/Modal/ModalYesOrNoAdmin/ModalYesOrNoAdmin";
@@ -9,6 +9,7 @@ import { searchIcon, deleteIcon } from "@/components/icons/Svg/Svg";
 import UserType from "@/types/user.types";
 import { useDelete } from "@/hook/useDelete";
 import useQueryString from "@/utils/createQueryString";
+import LoadingSpinner from "@/components/modules/LoadingBox/LoadingSpinner";
 
 export default function Users() {
   const columns: string[] = [
@@ -26,11 +27,11 @@ export default function Users() {
   const currentSearch = searchParams?.get("search") || "";
 
   // دریافت کاربران با استفاده از SWR
-  const { data: users, mutate } = useSWR<UserType[]>(
+  const { data: users, mutate, error, isLoading } = useSWR<UserType[]>(
     `/api/user/all?search=${currentSearch}`
   );
 
-  const { deleteItem } = useDelete("/api/user/delete", {
+  const { deleteItem, isMutating } = useDelete("/api/user/delete", {
     onSuccess: () => {
       alert("Item deleted successfully!");
       mutate(); // بازخوانی لیست کاربران پس از حذف
@@ -99,6 +100,7 @@ export default function Users() {
                   <div className="flex items-center justify-center gap-2">
                     {user.username !== "Amirreza" && (
                       <ModalYesOrNoAdmin
+                        isMutating={isMutating}
                         isAttention={true}
                         submitHandler={() => handleDeleteUser(user._id)}
                         title="حذف کاربر"
@@ -115,6 +117,31 @@ export default function Users() {
                 </td>
               </tr>
             ))}
+            {isLoading && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <LoadingSpinner showTitle={true} />
+                </td>
+              </tr>
+            )}
+            {error && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <div className="flex justify-center items-center">
+                    <p>خطا در بارگزاری کاربران</p>
+                  </div>
+                </td>
+              </tr>
+            )}
+            {(!users?.length && !error && !isLoading) && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <div className="flex justify-center items-center">
+                    <p>کاربری یافت نشد</p>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </TableAdmin>
       </div>

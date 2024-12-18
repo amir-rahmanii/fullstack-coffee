@@ -47,7 +47,7 @@ export const GET = async (req: NextRequest) => {
                 : { createdAt: -1 }; // پیش‌فرض: جدیدترین محصولات
 
         // واکشی محصولات
-        const allProducts = await ProductModel.find(filterCondition, "-__v -updatedAt")
+        const allProducts = await ProductModel.find(filterCondition, "-__v")
             .sort(sortCondition)
             .populate("category");
 

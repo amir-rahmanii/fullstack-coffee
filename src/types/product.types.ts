@@ -11,7 +11,8 @@ type ProductTypes = {
     description: string,
     weight: string,
     images: string[],
-    createdAt: Date
+    createdAt: Date,
+    updatedAt: Date
 }
 
 export default ProductTypes

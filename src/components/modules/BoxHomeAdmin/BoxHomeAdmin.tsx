@@ -5,7 +5,7 @@ type BoxHomeProps = {
   title: string,
   count: number,
   growth: number,
-  svg : any
+  svg : any,
 }
 
 function BoxHome(props: BoxHomeProps) {
@@ -20,9 +20,9 @@ function BoxHome(props: BoxHomeProps) {
 
       {/* number */}
       <div className='mt-4 flex flex-col gap-1'>
-        <p className='font-bold text-2xl/[30px] font-sans'>{props.count?.toLocaleString()}</p>
+        <p className='font-bold text-2xl/[30px] font-sans'>{props.count?.toLocaleString("fa-ir")}</p>
         <div className='text-sm flex justify-between items-center'>
-          <p className='text-admin-High'>Total {props.title}</p>
+          <p className='text-admin-High'>{props.title}</p>
           <div className={`${props.growth > 0 ? "text-admin-plus" : "text-admin-minus"} flex`}>{props.growth.toFixed(2)} %
             <div className={`${props.growth > 0 ? "rotate-180" : "rotate-0"}`}>
               <IoArrowDown />

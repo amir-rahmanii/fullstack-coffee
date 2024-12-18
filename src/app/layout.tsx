@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/styles/globals.css";
-import { SWRConfig } from 'swr'
 import { MySWRProvider } from "@/context/swr-provider";
+import Head from "next/head";
 
 const danaRegular = localFont({
   src: '../../public/fonts/DanaFaNum-Regular.woff2',
@@ -39,6 +39,9 @@ export default function RootLayout({
       <body
         className={` font-danaRegular ${danaRegular.variable} ${danaMedium.variable} ${danaBold.variable}`}
       >
+        <Head>
+          <link rel="shortcut icon" href="/favicon.ico" />
+        </Head>
         <MySWRProvider>
           {children}
         </MySWRProvider>

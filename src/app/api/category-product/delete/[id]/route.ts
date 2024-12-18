@@ -1,20 +1,21 @@
-import connectToDB from "@/configs/db";
+import ProductModel from "@/models/products"; // مدل کاربر
+import CategoryProductModel from "@/models/categoryProducts"; // مدل دسته بندی
+import UserModel from "@/models/user"; // مدل کاربر
+import connectToDB from "@/configs/db"; // متصل شدن به دیتابیس
+import { NextRequest } from "next/server"; // نوع درخواست Next.js
+import { cookies } from "next/headers"; // مدیریت کوکی‌ها
 import { verifyToken } from "@/utils/auth";
-import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
-import UserModel from "@/models/user";
-import categoryProductModel from "@/models/categoryProducts";
 
-export const GET = async (req: NextRequest) => {
+export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
     try {
         // اتصال به دیتابیس
         await connectToDB();
 
+        const { id } = await params;
+
+
         const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
         const accessToken = cookieStore.get('accessToken')?.value;
-        // دریافت فایل‌ها از درخواست (با استفاده از async/await)
-
-        const searchQuery = req.nextUrl.searchParams.get("search") || "";
 
         // بررسی توکن
         if (!accessToken) {
@@ -36,22 +37,18 @@ export const GET = async (req: NextRequest) => {
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        const filterCondition = searchQuery
-        ? {
-              $or: [
-                  { title: { $regex: searchQuery, $options: "i" } },
-              ],
-          }
-        : {};
+        // حذف کاربر از دیتابیس
+        const deleteCategoryProduct = await CategoryProductModel.findOneAndDelete({ _id: id });
+        await ProductModel.deleteMany({ category: id });
 
-
-        const allCategoryProduct = await categoryProductModel.find(filterCondition, "-__v -updatedAt")
-
-
+        // اگر کاربر یافت نشد
+        if (!deleteCategoryProduct) {
+            return Response.json({ message: "دسته بندی محصول یافت نشد" }, { status: 404 });
+        }
 
         // بازگشت پاسخ موفقیت‌آمیز
         return Response.json(
-            allCategoryProduct,
+            { message: "دسته بندی محصول با موفقیت حذف شد" },
             { status: 200 }
         );
     } catch (err) {

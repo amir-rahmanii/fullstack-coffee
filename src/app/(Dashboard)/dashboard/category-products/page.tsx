@@ -9,14 +9,14 @@ import { searchIcon, deleteIcon } from "@/components/icons/Svg/Svg";
 import UserType from "@/types/user.types";
 import { useDelete } from "@/hook/useDelete";
 import AddCategoryProductAdmin from "@/components/template/AddCategoryProductAdmin/AddCategoryProductAdmin";
+import CategoryProductType from "@/types/categoryProduct.types";
+import LoadingSpinner from "@/components/modules/LoadingBox/LoadingSpinner";
 
 export default function Users() {
   const columns: string[] = [
     "#",
-    "نام کاربری",
-    "ایمیل",
-    "نقش",
-    "تاریخ ثبت نام",
+    "نام دسته بندی",
+    "تاریخ ثبت",
     "عملیات",
   ];
 
@@ -35,20 +35,20 @@ export default function Users() {
     [searchParams]
   );
 
-  // دریافت کاربران با استفاده از SWR
-  const { data: users, mutate } = useSWR<UserType[]>(
-    `/api/user/all?search=${searchParams?.get("search") || ""}`
+
+  const { data: categories, mutate, isLoading, error } = useSWR<CategoryProductType[]>(
+    `/api/category-product/getAll?search=${searchParams?.get("search") || ""}`
   );
 
-  const { deleteItem } = useDelete("/api/user/delete", {
+  const { deleteItem, isMutating } = useDelete("/api/category-product/delete", {
     onSuccess: () => {
       alert("Item deleted successfully!");
-      mutate(); // بازخوانی لیست کاربران پس از حذف
+      mutate();
     },
     onError: (error) => alert(`Error: ${error.message}`),
   });
 
-  const handleDeleteUser = async (id: string | number) => {
+  const handleDeleteCategoryProduct = async (id: string | number) => {
     await deleteItem(id);
   };
 
@@ -61,7 +61,7 @@ export default function Users() {
     <div className="font-sans grid overflow-auto max-w-[710px] md:max-w-full md:w-full">
       <AddCategoryProductAdmin />
       <div className="bg-admin-navy rounded">
-        <h3 className="text-xl px-6 pt-6 font-danaBold">محصولات</h3>
+        <h3 className="text-xl px-6 pt-6 font-danaBold">دسته بندی محصولات</h3>
         <div className="px-6 pt-6 flex justify-end items-center">
           <form
             className="flex items-center gap-4"
@@ -88,44 +88,64 @@ export default function Users() {
         </div>
         <TableAdmin columns={columns}>
           <tbody className="h-[200px] overflow-auto">
-            {users?.map((user, index) => (
+            {categories?.map((category, index) => (
               <tr
-                key={user._id}
+                key={category._id}
                 className={`border-y text-sm even:bg-[#313D4A] text-center border-[#2e3a47]`}
               >
                 <td className="py-[18px]  px-2 lg:px-1">{index + 1}</td>
                 <td className="py-[18px]  px-2 lg:px-1">
                   <div className="flex items-center gap-2 justify-center">
-                    {user.username}
+                    {category.title}
                   </div>
                 </td>
-                <td className="py-[18px]  px-2 lg:px-1">{user.email}</td>
                 <td className="py-[18px]  px-2 lg:px-1">
-                  {user.role === "ADMIN" ? "ادمین" : "کاربر"}
-                </td>
-                <td className="py-[18px]  px-2 lg:px-1">
-                  {new Date(user.createdAt).toLocaleDateString("fa-IR")}
+                  {new Date(category.createdAt).toLocaleDateString("fa-IR")}
                 </td>
                 <td className="py-[18px]  px-2 lg:px-1">
                   <div className="flex items-center justify-center gap-2">
-                    {user.username !== "Amirreza" && (
-                      <ModalYesOrNoAdmin
-                        isAttention={true}
-                        submitHandler={() => handleDeleteUser(user._id)}
-                        title="حذف کاربر"
-                        description={`آیا مایل به حذف ${user.username} هستید`}
+                    <ModalYesOrNoAdmin
+                      isMutating={isMutating}
+                      isAttention={true}
+                      submitHandler={() => handleDeleteCategoryProduct(category._id)}
+                      title="حذف کاربر"
+                      description={`آیا مایل به حذف ${category.title} هستید`}
+                    >
+                      <button
+                        className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-red-400 transition-all duration-300`}
                       >
-                        <button
-                          className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-red-400 transition-all duration-300`}
-                        >
-                          {deleteIcon}
-                        </button>
-                      </ModalYesOrNoAdmin>
-                    )}
+                        {deleteIcon}
+                      </button>
+                    </ModalYesOrNoAdmin>
                   </div>
                 </td>
               </tr>
             ))}
+            {isLoading && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <LoadingSpinner showTitle={true} />
+                </td>
+              </tr>
+            )}
+            {error && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <div className="flex justify-center items-center">
+                    <p>خطا در بارگزاری دسته بندی محصولات</p>
+                  </div>
+                </td>
+              </tr>
+            )}
+            {(!categories?.length && !error && !isLoading) && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <div className="flex justify-center items-center">
+                    <p>دسته بندی محصولات یافت نشد</p>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </TableAdmin>
       </div>

@@ -32,7 +32,7 @@ const usePostOrPut = (
     };
 
     // استفاده از SWR برای مدیریت ارسال درخواست
-    const { trigger, data, error, isMutating } = useSWRMutation(url, sendRequest);
+    const { trigger, data, error, isMutating} = useSWRMutation(url, sendRequest);
 
     // تابعی برای ارسال داده‌ها و مدیریت پیام موفقیت
     const mutate = async (data: any) => {
@@ -49,7 +49,7 @@ const usePostOrPut = (
         }
     };
 
-    return { mutate, data, error, isMutating };
+    return { mutate, data, error, isMutating};
 };
 
 export default usePostOrPut;

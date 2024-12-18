@@ -22,6 +22,7 @@ import AddProductTypes from '@/types/addProduct.types';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useSearchParams } from 'next/navigation';
+import LoadingSpinner from '@/components/modules/LoadingBox/LoadingSpinner';
 
 function AddProductAdmin() {
 
@@ -36,7 +37,7 @@ function AddProductAdmin() {
     const searchParams = useSearchParams();
     const { mutate } = useSWRConfig();
 
-    const { mutate : mutateAddProduct } = usePostOrPut(
+    const { mutate: mutateAddProduct, isMutating } = usePostOrPut(
         '/api/product/create', //  API
         'POST', // method
         'product created successfully!',// success MSG
@@ -323,8 +324,14 @@ function AddProductAdmin() {
 
                 </div>
 
-                <Button type='submit' variant={"default"} size={"default"}>
-                    تایید و اضافه کردن محصول
+                <Button disabled={isMutating} type='submit' variant={"default"} size={"default"}>
+                    {isMutating ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <>
+                            تایید و اضافه کردن محصول
+                        </>
+                    )}
                 </Button>
             </form>
         </div>

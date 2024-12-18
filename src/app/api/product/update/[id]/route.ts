@@ -8,33 +8,29 @@ import fs from "fs";
 import path from "path";
 
 // Helper function to save files
-const saveFiles = async (files: Buffer[], filenames: string[], existingUrls: string[]) => {
-    const uploadDir = path.join(process.cwd(), "public/uploads/products");
+const saveFiles = async (files: Buffer[], filenames: string[]) => {
+    const uploadDir = path.join(process.cwd(), 'public/uploads/products');
 
     if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    const filePaths: string[] = [];
-
-    for (let i = 0; i < filenames.length; i++) {
-        const filePath = path.join(uploadDir, filenames[i]);
-
-        // Check if the file URL already exists in the database
-        if (!existingUrls.includes(`/uploads/products/${filenames[i]}`)) {
-            await fs.promises.writeFile(filePath, files[i]);
-            filePaths.push(`/uploads/products/${filenames[i]}`);
-        }
-    }
+    const filePaths = filenames.map((filename, index) => {
+        const filePath = path.join(uploadDir, filename);
+        fs.writeFileSync(filePath, files[index]);
+        return `/uploads/products/${filename}`;
+    });
 
     return filePaths;
 };
+
 
 export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
     try {
         await connectToDB();
         const cookieStore = await cookies();
-        const accessToken = cookieStore.get("accessToken")?.value;
+        const accessToken = cookieStore.get('accessToken')?.value;
+        const { id } = await params;
 
         if (!accessToken) {
             return Response.json({ message: "شما وارد سیستم نشده‌اید" }, { status: 401 });
@@ -52,54 +48,47 @@ export const PUT = async (req: NextRequest, { params }: { params: { id: string }
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        const { id } = await params;
-        const formData = await req.formData();
+        // دریافت داده‌ها از فرم (multipart/form-data)
+        const formData = await req.formData();  // استفاده از formData برای داده‌های multipart/form-data
+        const title = formData.get("title")?.toString() ?? '';
+        const price = formData.get("price")?.toString() ?? '';
+        const discount = formData.get("discount")?.toString() ?? '';
+        const description = formData.get("description")?.toString() ?? '';
+        const category = formData.get("category")?.toString() ?? '';
+        const weight = formData.get("weight")?.toString() ?? '';
+        const stock = formData.get("stock")?.toString() ?? '';
 
-        const title = formData.get("title")?.toString() ?? "";
-        const price = formData.get("price")?.toString() ?? "";
-        const discount = formData.get("discount")?.toString() ?? "";
-        const description = formData.get("description")?.toString() ?? "";
-        const category = formData.get("category")?.toString() ?? "";
-        const weight = formData.get("weight")?.toString() ?? "";
-        const stock = formData.get("stock")?.toString() ?? "";
-
-        if (!title || !price || !discount || !description || !category || !weight || !stock) {
+        if (!title || !price || !discount || !description || !category || !weight) {
             return Response.json({ message: "لطفاً تمام فیلدهای مورد نیاز را پر کنید" }, { status: 400 });
         }
 
-        const newImages = formData.getAll("images");
-        const remainingImages = JSON.parse(formData.get("remainingImages")?.toString() || "[]");
+        // دریافت فایل‌ها به صورت Buffer
+        const images = formData.getAll("images");
 
-        
-        const existingProduct = await ProductModel.findById(id);
 
-        if (!existingProduct) {
-            return Response.json({ message: "محصول مورد نظر یافت نشد" }, { status: 404 });
+
+        if (images.length < 2) {
+            return Response.json({ message: "لطفاً دو تصویر انتخاب کنید" }, { status: 400 });
         }
 
-        // بررسی تعداد تصاویر دقیقاً 2 باشد
-        if (newImages.length + remainingImages.length !== 2) {
-            return Response.json({ message: "لطفاً دقیقاً دو تصویر انتخاب کنید" }, { status: 400 });
-        }
-
+        // ذخیره فایل‌ها به صورت باینری (Buffer)
         const filesBuffer: Buffer[] = [];
         const filenames: string[] = [];
 
-        for (const file of newImages) {
-            if (file instanceof File) {
-                const buffer = await file.arrayBuffer();
-                filesBuffer.push(Buffer.from(buffer));
+        for (const file of images) {
+            if (file instanceof File) {  // بررسی اینکه آیا file از نوع File است
+                const buffer = await file.arrayBuffer(); // تبدیل به ArrayBuffer
+                filesBuffer.push(Buffer.from(buffer));  // تبدیل به Buffer
                 filenames.push(`${Date.now()}-${file.name}`);
             }
         }
 
-        // Save only files not already present in the database
-        const newImageUrls = await saveFiles(filesBuffer, filenames, existingProduct.images);
-        const finalImageUrls = [...remainingImages, ...newImageUrls];
+        const imageUrls = await saveFiles(filesBuffer, filenames);
 
         const priceWithDiscount = (+price * (100 - +discount)) / 100;
 
-        const updatedProduct = await ProductModel.findByIdAndUpdate(
+
+        await ProductModel.findByIdAndUpdate(
             id,
             {
                 title,
@@ -110,14 +99,15 @@ export const PUT = async (req: NextRequest, { params }: { params: { id: string }
                 priceWithDiscount,
                 weight: +weight,
                 stock: +stock,
-                images: finalImageUrls,
+                images: imageUrls,
             },
             { new: true } // Return the updated document
         );
 
-        return Response.json({ message: "محصول با موفقیت به‌روزرسانی شد", product: updatedProduct }, { status: 200 });
+        return Response.json({ message: "محصول با موفقیت ویرایش شد" }, { status: 201 });
     } catch (err) {
         console.error(err);
         return Response.json({ message: "خطای داخلی ناشناخته رخ داده است" }, { status: 500 });
     }
 };
+

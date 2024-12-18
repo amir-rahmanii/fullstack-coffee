@@ -1,4 +1,4 @@
-import { DragEvent, useState } from 'react';
+import { DragEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import productSchema from '@/validation/Product';
@@ -14,6 +14,7 @@ import usePostOrPut from '@/hook/usePostOrPut';
 import CategoryProductType from '@/types/categoryProduct.types';
 import ProductTypes from '@/types/product.types';
 import AddProductTypes from '@/types/addProduct.types';
+import LoadingSpinner from '@/components/modules/LoadingBox/LoadingSpinner';
 
 type UpdateProductAdminProps = {
     product: ProductTypes;
@@ -30,7 +31,25 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
     const searchParams = useSearchParams();
     const { mutate } = useSWRConfig();
 
-    const { mutate: mutateAddProduct } = usePostOrPut(
+
+    useEffect(() => {
+        const convertUrlsToFiles = async () => {
+            const files: File[] = await Promise.all(
+                product.images.map(async (url: string) => {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+                    const filename = url.split('/').pop() || 'image.jpg'; // استخراج نام فایل از URL
+                    return new File([blob], filename, { type: blob.type });
+                })
+            );
+            setImagesFile(files);
+        };
+
+        convertUrlsToFiles();
+    }, [product.images]);
+
+
+    const { mutate: mutateUpdateProduct, isMutating } = usePostOrPut(
         `/api/product/update/${product._id}`, // API
         'PUT', // method
         'Product Updated successfully!',
@@ -41,51 +60,56 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
         true
     );
 
-    
     const handleImageUpload = (files: FileList | null) => {
         if (!files || files.length === 0) return;
-    
-        const validFiles = Array.from(files).filter((file) => file.type.startsWith("image/"));
-        const remainingSlots = 2 - imagesPreview.filter((img) => img !== null).length; // Remaining slots for images
-    
-        // Only allow adding files if there is space left
-        const newFiles = validFiles.slice(0, remainingSlots);
-    
-        // Update preview images
+
+        const validFiles = Array.from(files).filter((file) =>
+            file.type.startsWith("image/")
+        );
+
+        // به‌روزرسانی تصاویر پیش‌نمایش و فایل‌ها
         setImagesPreview((prev) => {
+            const nonNullImages = prev.filter((img) => img !== null); // تصاویر موجود
+            if (nonNullImages.length >= 2) {
+                return prev;
+            }
+
             const updatedImages = [...prev];
-            newFiles.forEach((file) => {
-                if (updatedImages.length < 2) {
-                    updatedImages.push(URL.createObjectURL(file)); // Add new file as preview image
+            validFiles.forEach((file) => {
+                const index = updatedImages.findIndex((img) => img === null); // خانه خالی
+                if (index !== -1) {
+                    updatedImages[index] = URL.createObjectURL(file); // به‌روزرسانی پیش‌نمایش
                 }
             });
-            return updatedImages.slice(0, 2); // Ensure only two images
+
+            return updatedImages.slice(0, 2); // اطمینان از داشتن حداکثر ۲ تصویر
         });
-    
-        // Update image files
+
+        // به‌روزرسانی فایل‌ها
         setImagesFile((prev) => {
             const updatedFiles = [...prev];
-            updatedFiles.push(...newFiles); // Add new files to image file list
-            return updatedFiles.slice(0, 2); // Ensure only two files
+            validFiles.forEach((file) => {
+                if (updatedFiles.length < 2) {
+                    updatedFiles.push(file); // اضافه کردن فایل به آرایه
+                }
+            });
+
+            return updatedFiles.slice(0, 2); // اطمینان از داشتن حداکثر ۲ فایل
         });
     };
-    
-    
+
+
     const removeImage = (index: number) => {
-        // Revoke the object URL if it's defined
         setImagesPreview((prev) => {
             const updatedImages = [...prev];
-            if (updatedImages[index]) {
-                URL.revokeObjectURL(updatedImages[index]!);
-            }
-            // Remove image from preview array and replace with null
-            updatedImages.splice(index, 1, null);
+            if (updatedImages[index]) URL.revokeObjectURL(updatedImages[index]!); // پاکسازی URL
+            updatedImages[index] = null; // حذف پیش‌نمایش
             return updatedImages;
         });
-    
-        // Remove the corresponding file from the imagesFile array
+
         setImagesFile((prev) => {
-            const updatedFiles = prev.filter((_, fileIndex) => fileIndex !== index);
+            const updatedFiles = [...prev];
+            updatedFiles.splice(index, 1); // حذف فایل
             return updatedFiles;
         });
     };
@@ -99,22 +123,23 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
 
         setImagesPreview((prev) => {
             const updatedImages = [...prev];
-            updatedImages[draggedIndex] = updatedImages[index];
-            updatedImages[index] = null;
+            // جابجایی تصاویر
+            updatedImages[draggedIndex] = updatedImages[index]; // جابجایی تصویر
+            updatedImages[index] = null; // تصویر در مقصد خالی می‌شود
             return updatedImages;
         });
 
-        setDraggedIndex(null);
+        setDraggedIndex(null); // ریست درگ
     };
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
+        e.preventDefault(); // برای اجازه دادن به دراپ
     };
 
     const handleExternalDrop = (e: DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        handleImageUpload(e.dataTransfer.files);
-    };
+        e.preventDefault(); // جلوگیری از رفتار پیش‌فرض مرورگر
+        handleImageUpload(e.dataTransfer.files); // آپلود فایل‌ها
+    }
 
     const {
         register,
@@ -133,16 +158,11 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
 
     const onSubmit = async (data: AddProductTypes) => {
         if (!selectedCategory) {
-            alert("Please select a category.");
+            alert("لطفاً یک دسته‌بندی انتخاب کنید");
             return;
         }
-
-
-
-        // Ensure exactly two images are selected
-        const remainingImages = imagesPreview.filter((img) => img !== null);
-        if (remainingImages.length + imagesFile.length !== 2) {
-            alert("Please select exactly two images.");
+        if (imagesFile.length < 2) {
+            alert("لطفاً دو تصویر انتخاب کنید");
             return;
         }
 
@@ -155,20 +175,14 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
         formData.append("weight", data.weight.toString());
         formData.append("category", selectedCategory);
 
-        // Add the files to the FormData
-        imagesFile.forEach((file) => {
-            formData.append("images", file);
-        });
+        imagesFile.forEach((file) => formData.append("images", file));
 
-        // If there are any remaining images, append them to the FormData
-        if (remainingImages.length) {
-            formData.append("remainingImages", JSON.stringify(remainingImages));
-        }
 
-        mutateAddProduct(formData);
+        console.log(imagesFile);
+
+
+        mutateUpdateProduct(formData); // ارسال درخواست
     };
-
-
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className='grid grid-cols-2 gap-3'>
@@ -321,8 +335,14 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
 
             </div>
 
-            <Button type='submit' variant={"default"} size={"default"}>
-                تایید و ویرایش کردن محصول
+            <Button disabled={isMutating} type='submit' variant={"default"} size={"default"}>
+                {isMutating ? (
+                    <LoadingSpinner />
+                ) : (
+                    <>
+                        تایید و ویرایش کردن محصول
+                    </>
+                )}
             </Button>
         </form>
     )

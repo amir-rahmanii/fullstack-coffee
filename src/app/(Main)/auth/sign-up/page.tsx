@@ -10,6 +10,7 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import usePostOrPut from '@/hook/usePostOrPut';
+import LoadingSpinner from '@/components/modules/LoadingBox/LoadingSpinner';
 
 
 function SignUp() {
@@ -19,14 +20,14 @@ function SignUp() {
     const { mutate, isMutating } = usePostOrPut(
         '/api/auth/signup', //  API
         'POST', // method
-        'user created successfully!' ,// success MSG
+        'user created successfully!',// success MSG
         () => {
             reset();
         }
     );
 
     // React Hook Form
-    const { register, reset , handleSubmit, formState: { errors } } = useForm({
+    const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(signUpSchema)
     });
 
@@ -85,12 +86,19 @@ function SignUp() {
                         </div>
                         <div className='flex justify-center mt-8'>
                             <Button
+                                disabled={isMutating}
                                 onClick={handleSubmit((data) => {
                                     mutate(data);
                                 })}
                                 type="submit"
                                 className='rounded-md px-10' variant="default" size="default">
-                                ثبت نام
+                                {isMutating ? (
+                                    <LoadingSpinner />
+                                ) : (
+                                    <>
+                                        ثبت نام
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </form>

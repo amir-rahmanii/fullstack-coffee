@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import UpdateProductAdmin from "@/components/template/UpdateProductAdmin/UpdateProductAdmin";
+import LoadingSpinner from "@/components/modules/LoadingBox/LoadingSpinner";
 
 
 export default function Products() {
@@ -37,7 +38,7 @@ export default function Products() {
   const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
 
 
-  const { data: products, error, mutate } = useSWR<ProductTypes[]>(
+  const { data: products, error, mutate, isLoading } = useSWR<ProductTypes[]>(
     `/api/product/getAll?search=${searchParams?.get("search") || ""}&sort=${searchParams?.get("sort") || "latest"}&stock=${searchParams?.get("stock") || "0"}`
   );
 
@@ -49,7 +50,7 @@ export default function Products() {
   }, [searchParams]); // هر زمان که searchParams تغییر کند
 
 
-  const { deleteItem } = useDelete("/api/product/delete", {
+  const { deleteItem , isMutating } = useDelete("/api/product/delete", {
     onSuccess: () => {
       alert("محصول با موفقیت حذف شد");
       mutate(); // بازخوانی محصولات
@@ -146,7 +147,7 @@ export default function Products() {
                           {eyeIcon}
                         </button>
                       </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
+                      <DialogContent className="w-full max-w-[90%] overflow-y-auto sm:max-w-[600px] lg:max-w-[800px]">
                         <DialogHeader>
                           <DialogTitle>اطلاعات محصول</DialogTitle>
                         </DialogHeader>
@@ -167,12 +168,14 @@ export default function Products() {
                           <p>وزن : {product.weight} گرم</p>
                           <p>وضعیت موجودی : {product.stock ? "موجود" : "ناموجود"}</p>
                           <p> تاریخ ایجاد :   {new Date(product.createdAt).toLocaleDateString("fa-IR")}</p>
+                          <p> اخرین به روز رسانی :   {new Date(product.updatedAt).toLocaleDateString("fa-IR")}</p>
                         </div>
                       </DialogContent>
                     </Dialog>
 
                     {/* delete product */}
                     <ModalYesOrNoAdmin
+                     isMutating={isMutating}
                       isAttention={true}
                       submitHandler={() => handleDeleteProduct(product._id)}
                       title="حذف محصول"
@@ -194,7 +197,7 @@ export default function Products() {
                           {updateIcon}
                         </button>
                       </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
+                      <DialogContent className="w-full overflow-y-auto max-w-[90%] sm:max-w-[600px] lg:max-w-[800px]">
                         <DialogHeader>
                           <DialogTitle>ویرایش محصول</DialogTitle>
                         </DialogHeader>
@@ -206,14 +209,29 @@ export default function Products() {
                 </td>
               </tr>
             ))}
-            {error && (
+            {isLoading && (
               <tr>
-                <td colSpan={columns.length}>خطا در بارگذاری محصولات</td>
+                <td colSpan={columns.length}>
+                  <LoadingSpinner showTitle={true} />
+                </td>
               </tr>
             )}
-            {!products?.length && !error && (
+            {error && (
               <tr>
-                <td colSpan={columns.length}>محصولی یافت نشد</td>
+                <td colSpan={columns.length}>
+                  <div className="flex justify-center items-center">
+                    <p>خطا در بارگزاری محصولات</p>
+                  </div>
+                </td>
+              </tr>
+            )}
+            {(!products?.length && !error && !isLoading) && (
+              <tr>
+                <td colSpan={columns.length}>
+                  <div className="flex justify-center items-center">
+                    <p>محصولی یافت نشد</p>
+                  </div>
+                </td>
               </tr>
             )}
           </tbody>

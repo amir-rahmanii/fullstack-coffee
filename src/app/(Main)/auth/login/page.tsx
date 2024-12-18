@@ -15,20 +15,21 @@ import loginSchema from '@/validation/login';
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import usePostOrPut from '@/hook/usePostOrPut';
+import LoadingSpinner from '@/components/modules/LoadingBox/LoadingSpinner';
 
 export default function Login() {
 
     const [isChangeTypePassword, setIsChangeTypePassword] = useState(true);
 
-        // Hook for POST request to sign up
-        const { mutate, isMutating } = usePostOrPut(
-            '/api/auth/signin', //  API
-            'POST', // method
-            'user logined successfully!' ,// success MSG
-            () => {
-                reset();
-            }
-        );
+    // Hook for POST request to sign up
+    const { mutate, isMutating } = usePostOrPut(
+        '/api/auth/signin', //  API
+        'POST', // method
+        'user logined successfully!',// success MSG
+        () => {
+            reset();
+        }
+    );
 
 
 
@@ -89,10 +90,16 @@ export default function Login() {
                         </div>
                         {/* login btn */}
                         <div className='flex justify-center mt-8'>
-                            <Button onClick={handleSubmit((data) => {
+                            <Button disabled={isMutating} onClick={handleSubmit((data) => {
                                 mutate(data)
                             })} className='rounded-md px-10' variant="default" size="default">
-                                ورود
+                                {isMutating ? (
+                                    <LoadingSpinner />
+                                ) : (
+                                    <>
+                                        ورود
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </form>

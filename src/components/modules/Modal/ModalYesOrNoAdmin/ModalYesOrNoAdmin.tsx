@@ -11,6 +11,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Image from 'next/image'
+import LoadingSpinner from '../../LoadingBox/LoadingSpinner'
 
 type ModalProps = {
     title?: string,
@@ -18,10 +19,12 @@ type ModalProps = {
     isAttention?: boolean,
     isYesOrNo?: boolean,
     description?: string,
+    isMutating?: boolean,
     children?: React.ReactNode
 }
 
 function ModalYesOrNoAdmin({
+    isMutating,
     isAttention,
     children,
     description,
@@ -33,7 +36,7 @@ function ModalYesOrNoAdmin({
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="w-full overflow-y-auto max-w-lg">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>
@@ -46,7 +49,15 @@ function ModalYesOrNoAdmin({
                     )}
                 </div>
                 <DialogFooter>
-                    <Button className='w-full rounded-xl' variant="default" size='default' type="submit" onClick={submitHandler}>تایید</Button>
+                    <Button disabled={isMutating} className='w-full rounded-xl' variant="default" size='default' type="submit" onClick={submitHandler}>
+                        {isMutating ? (
+                            <LoadingSpinner />
+                        ) : (
+                            <>
+                                تایید
+                            </>
+                        )}
+                    </Button>
                     <DialogClose asChild>
                         <Button className='w-full rounded-xl' variant="destructive" size='default'>لغو</Button>
                     </DialogClose>
