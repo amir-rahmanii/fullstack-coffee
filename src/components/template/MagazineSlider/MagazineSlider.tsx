@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import React, { useCallback, useRef, useState } from 'react'
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { Swiper, SwiperSlide } from 'swiper/react';

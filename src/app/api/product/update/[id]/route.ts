@@ -25,7 +25,11 @@ const saveFiles = async (files: Buffer[], filenames: string[]) => {
 };
 
 
-export const PUT = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PUT = async (req: NextRequest, {
+    params,
+}: {
+    params: Promise<{ id: string }>
+}) => {
     try {
         await connectToDB();
         const cookieStore = await cookies();

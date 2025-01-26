@@ -49,3 +49,46 @@ body {
   background-color: #009879;
   color: white;
 }
+
+
+
+.mySwiper .swiper-slide {
+  width: 25%;
+  height: 100%;
+  opacity: 0.4;
+}
+
+.mySwiper .swiper-slide-thumb-active {
+  opacity: 1;
+}
+
+
+
+.mySwiper2 .swiper-button-next,
+.mySwiper2 .swiper-button-prev {
+  z-index: 10; /* اطمینان از قرارگیری روی سایر عناصر */
+  color: #fff; /* رنگ آیکون فلش */
+  background-color: #009879; /* پس‌زمینه دکمه */
+  border-radius: 50%; /* گرد کردن دکمه‌ها */
+  padding: 10px; /* فضای داخلی */
+  width: 40px; /* عرض */
+  height: 40px; /* ارتفاع */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease; /* افکت تغییرات */
+}
+
+.mySwiper2 .swiper-button-next:hover,
+.mySwiper2 .swiper-button-prev:hover {
+  background-color: #E6C498; /* تغییر رنگ پس‌زمینه هنگام هاور */
+  color: #009879; /* تغییر رنگ آیکون هنگام هاور */
+  transform: scale(1.1); /* بزرگ‌تر شدن دکمه هنگام هاور */
+  cursor: pointer;
+}
+
+.mySwiper2 .swiper-button-next:after,
+.mySwiper2 .swiper-button-prev:after {
+  font-size: 16px; /* اندازه آیکون فلش */
+  font-weight: bold; /* ضخامت آیکون فلش */
+}

@@ -13,7 +13,7 @@ import useQueryString from "@/utils/createQueryString";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import UpdateProductAdmin from "@/components/template/UpdateProductAdmin/UpdateProductAdmin";
 import LoadingSpinner from "@/components/modules/LoadingBox/LoadingSpinner";
@@ -35,7 +35,11 @@ export default function Products() {
   const [searchValue, setSearchValue] = useState<string>(
     searchParams?.get("search") || ""
   );
+
+  const [activeProduct, setActiveProduct] = useState<ProductTypes | null>(null);
   const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
+
+
 
 
   const { data: products, error, mutate, isLoading } = useSWR<ProductTypes[]>(
@@ -50,7 +54,7 @@ export default function Products() {
   }, [searchParams]); // هر زمان که searchParams تغییر کند
 
 
-  const { deleteItem , isMutating } = useDelete("/api/product/delete", {
+  const { deleteItem, isMutating } = useDelete("/api/product/delete", {
     onSuccess: () => {
       alert("محصول با موفقیت حذف شد");
       mutate(); // بازخوانی محصولات
@@ -73,6 +77,12 @@ export default function Products() {
   const isStockHandler = (value: boolean) => {
     updateQueryString("stock", value ? "1" : "0");
   }
+
+  const openUpdateModal = (product: ProductTypes) => {
+    console.log("Opening update modal for:", product); // Debug
+    setActiveProduct(product);
+  };
+
 
   return (
     <div className="font-sans grid overflow-auto max-w-[710px] md:max-w-full md:w-full">
@@ -149,7 +159,8 @@ export default function Products() {
                       </DialogTrigger>
                       <DialogContent className="w-full max-w-[90%] overflow-y-auto sm:max-w-[600px] lg:max-w-[800px]">
                         <DialogHeader>
-                          <DialogTitle>اطلاعات محصول</DialogTitle>
+                          <DialogTitle>اطلاعات محصول {product.title}</DialogTitle>
+                          <DialogDescription></DialogDescription>
                         </DialogHeader>
 
                         <div className="flex items-center gap-6 flex-col lg:flex-row">
@@ -170,12 +181,13 @@ export default function Products() {
                           <p> تاریخ ایجاد :   {new Date(product.createdAt).toLocaleDateString("fa-IR")}</p>
                           <p> اخرین به روز رسانی :   {new Date(product.updatedAt).toLocaleDateString("fa-IR")}</p>
                         </div>
+                        <p className="text-center"> توضیحات : {product.description}</p>
                       </DialogContent>
                     </Dialog>
 
                     {/* delete product */}
                     <ModalYesOrNoAdmin
-                     isMutating={isMutating}
+                      isMutating={isMutating}
                       isAttention={true}
                       submitHandler={() => handleDeleteProduct(product._id)}
                       title="حذف محصول"
@@ -193,18 +205,25 @@ export default function Products() {
                       <DialogTrigger asChild>
                         <button
                           className={`w-4 h-4 text-admin-High hover:scale-110 hover:text-orange-400 transition-all duration-300`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openUpdateModal(product)
+                          }}
                         >
                           {updateIcon}
                         </button>
                       </DialogTrigger>
                       <DialogContent className="w-full overflow-y-auto max-w-[90%] sm:max-w-[600px] lg:max-w-[800px]">
                         <DialogHeader>
-                          <DialogTitle>ویرایش محصول</DialogTitle>
+                          <DialogTitle>ویرایش محصول {activeProduct?.title}</DialogTitle>
+                          <DialogDescription></DialogDescription>
                         </DialogHeader>
-
-                        <UpdateProductAdmin setIsOpenUpdateModal={setIsOpenUpdateModal} product={product} />
+                        {activeProduct && (
+                          <UpdateProductAdmin setIsOpenUpdateModal={setIsOpenUpdateModal} product={activeProduct} />
+                        )}
                       </DialogContent>
                     </Dialog>
+
                   </div>
                 </td>
               </tr>

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sheet"
 import { Button } from '@/components/ui/button';
 import CartProduct from '@/components/modules/Product/CartProduct/CartProduct';
+import { useBasketStore } from '@/store/useBasket';
 
 
 type SheetSideProps = {
@@ -22,6 +23,11 @@ type SheetSideProps = {
 
 
 export function CartSlide({ side, children }: SheetSideProps) {
+
+
+       const { basket, addToBasket, removeFromBasket, totalPrice } = useBasketStore();
+
+
     return (
         <div className="grid grid-cols-1 z-50">
             <Sheet key={side}>
@@ -36,18 +42,21 @@ export function CartSlide({ side, children }: SheetSideProps) {
                             </div>
                         </SheetTitle>
                     </SheetHeader>
-                    <div className='mt-5'>
-                        <p className='text-red-500 text-center'>سبد خرید شما خالی است.</p>
-                    </div>
+                    {basket.length ? (
+                        <div className='border-b border-lightnes mt-5 h-calc-vh overflow-y-auto'>
+                            {/* product */}
+                            {basket.map(data => (
+                                <CartProduct  key={data.id} {...data} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className='mt-5'>
+                            <p className='text-red-500 text-center'>سبد خرید شما خالی است.</p>
+                        </div>
+                    )}
 
                     {/* basket */}
-                    <div className='border-b border-lightnes h-calc-vh overflow-y-auto'>
-                        {/* product */}
-                       <CartProduct />
-                      
-                     
-                       
-                    </div>
+
                     <SheetFooter>
                         <SheetClose asChild>
                         </SheetClose>
@@ -55,7 +64,7 @@ export function CartSlide({ side, children }: SheetSideProps) {
                     <div className='flex flex-col items-center justify-center gap-[15px] mt-[15px]'>
                         <div className='flex justify-center gap-2'>
                             <span className='text-[#aaaaaa]'>مبلغ قابل پرداخت :</span>
-                            <span className='text-veronese text-xl'>313,290 تومان</span>
+                            <span className='text-veronese text-xl'>{totalPrice.toLocaleString()} تومان</span>
                         </div>
                         <Button size="default" variant="default">
                             مشاهده سبد خرید

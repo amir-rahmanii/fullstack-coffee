@@ -49,6 +49,10 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
     }, [product.images]);
 
 
+    console.log(product);
+    
+
+
     const { mutate: mutateUpdateProduct, isMutating } = usePostOrPut(
         `/api/product/update/${product._id}`, // API
         'PUT', // method
@@ -144,6 +148,7 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -177,8 +182,6 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
 
         imagesFile.forEach((file) => formData.append("images", file));
 
-
-        console.log(imagesFile);
 
 
         mutateUpdateProduct(formData); // ارسال درخواست

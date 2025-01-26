@@ -11,7 +11,7 @@ function BoxProduct() {
     const [counterProduct, setCounterProduct] = useState(0);
 
     return (
-        <div className='border relative hover:border-goldnes h-max w-max group transition-all duration-500 border-[#D9D9D9] rounded-2xl overflow-hidden'>
+        <div data-aos="fade-up" className='border relative hover:border-goldnes h-max w-max group transition-all duration-500 border-[#D9D9D9] rounded-2xl overflow-hidden'>
             <div className='relative -z-10'>
                 {/* main img */}
                 <Image

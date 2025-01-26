@@ -4,12 +4,16 @@ import { NextRequest } from "next/server"; // نوع درخواست Next.js
 import { cookies } from "next/headers"; // مدیریت کوکی‌ها
 import { verifyToken } from "@/utils/auth";
 
-export const DELETE = async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const DELETE = async (req: NextRequest, {
+    params,
+}: {
+    params: Promise<{ id: string }>
+}) => {
     try {
         // اتصال به دیتابیس
         await connectToDB();
 
-        const { id } = params;
+        const { id } = await params;
 
 
         const cookieStore = await cookies(); // برای مدیریت کوکی‌ها

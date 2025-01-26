@@ -83,7 +83,7 @@ export const POST = async (req: NextRequest) => {
 
         const imageUrls = await saveFiles(filesBuffer, filenames);
 
-        const priceWithDiscount = (+price * (100 - +discount)) / 100;
+        const priceWithDiscount =Math.floor((+price * (100 - +discount)) / 100);
 
 
         await ProductModel.create({

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "@/styles/globals.css";
 import { MySWRProvider } from "@/context/swr-provider";
 import Head from "next/head";
+import AosInitials from "@/utils/aos";
 
 const danaRegular = localFont({
   src: '../../public/fonts/DanaFaNum-Regular.woff2',
@@ -42,6 +43,7 @@ export default function RootLayout({
         <Head>
           <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
+        <AosInitials />
         <MySWRProvider>
           {children}
         </MySWRProvider>

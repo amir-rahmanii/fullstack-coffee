@@ -7,6 +7,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import React from "react"
 
 type BreadcrumbLinkArrayItem = {
     name: string,
@@ -28,12 +29,12 @@ export function BreadcrumbSection({ BreadcrumbLinkArray, BreadcrumbPageTitle }: 
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     {BreadcrumbLinkArray?.map((item, index) => (
-                        <div key={index}>
+                        <React.Fragment key={index}>
                             <BreadcrumbItem>
                                 <BreadcrumbLink href={item.path}>{item.name}</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
-                        </div>
+                        </React.Fragment>
                     ))}
                     <BreadcrumbItem>
                         <BreadcrumbPage>{BreadcrumbPageTitle}</BreadcrumbPage>

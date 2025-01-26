@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const CategoryProduct = require("@/models/categoryProducts")
 
 const productSchema = new mongoose.Schema(
   {
