@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { MySWRProvider } from "@/context/swr-provider";
 import Head from "next/head";
 import AosInitials from "@/utils/aos";
+import { Toaster } from 'react-hot-toast';
 
 const danaRegular = localFont({
   src: '../../public/fonts/DanaFaNum-Regular.woff2',
@@ -43,6 +44,28 @@ export default function RootLayout({
         <Head>
           <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
+        <Toaster
+        position="top-left"
+        reverseOrder={false}
+        toastOptions={{
+            style: {
+                background: '#333', // رنگ پس‌زمینه تاریک
+                color: '#fff', // رنگ متن روشن
+            },
+            success: {
+                style: {
+                    background: '#22c55e', // رنگ پس‌زمینه سبز برای پیام موفقیت
+                    color: '#fff',
+                },
+            },
+            error: {
+                style: {
+                    background: '#dc2626', // رنگ پس‌زمینه قرمز برای پیام خطا
+                    color: '#fff',
+                },
+            },
+        }}
+    />
         <AosInitials />
         <MySWRProvider>
           {children}

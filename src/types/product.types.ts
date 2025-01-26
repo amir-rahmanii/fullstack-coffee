@@ -6,7 +6,7 @@ type ProductTypes = {
     price: number,
     priceWithDiscount: number,
     discount: string,
-    stock: "0" | "1",
+    stock: 0 | 1,
     category: CategoryProductType,
     description: string,
     weight: number,

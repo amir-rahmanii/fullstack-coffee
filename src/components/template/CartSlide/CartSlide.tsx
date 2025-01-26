@@ -25,7 +25,7 @@ type SheetSideProps = {
 export function CartSlide({ side, children }: SheetSideProps) {
 
 
-       const { basket, addToBasket, removeFromBasket, totalPrice } = useBasketStore();
+    const { basket, removeFromBasket, totalPrice } = useBasketStore();
 
 
     return (
@@ -46,7 +46,7 @@ export function CartSlide({ side, children }: SheetSideProps) {
                         <div className='border-b border-lightnes mt-5 h-calc-vh overflow-y-auto'>
                             {/* product */}
                             {basket.map(data => (
-                                <CartProduct  key={data.id} {...data} />
+                                <CartProduct removeFromBasket={removeFromBasket} key={data.id} {...data} />
                             ))}
                         </div>
                     ) : (
@@ -61,15 +61,15 @@ export function CartSlide({ side, children }: SheetSideProps) {
                         <SheetClose asChild>
                         </SheetClose>
                     </SheetFooter>
-                    <div className='flex flex-col items-center justify-center gap-[15px] mt-[15px]'>
-                        <div className='flex justify-center gap-2'>
-                            <span className='text-[#aaaaaa]'>مبلغ قابل پرداخت :</span>
-                            <span className='text-veronese text-xl'>{totalPrice.toLocaleString()} تومان</span>
+                        <div className='flex flex-col items-center justify-center gap-[15px] mt-[15px]'>
+                            <div className='flex justify-center gap-2'>
+                                <span className='text-[#aaaaaa]'>مبلغ قابل پرداخت :</span>
+                                <span className='text-veronese text-xl'>{totalPrice.toLocaleString()} تومان</span>
+                            </div>
+                            <Button size="default" variant="default">
+                                مشاهده سبد خرید
+                            </Button>
                         </div>
-                        <Button size="default" variant="default">
-                            مشاهده سبد خرید
-                        </Button>
-                    </div>
                 </SheetContent>
             </Sheet>
         </div>

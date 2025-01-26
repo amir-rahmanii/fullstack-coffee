@@ -8,17 +8,18 @@ import { FaTruck } from "react-icons/fa6";
 import { useBasketStore } from '@/store/useBasket';
 
 function SideBarToBasketSticky(
-    { id, price, priceWithDiscount , title , image }
+    { id, price, priceWithDiscount, title, image, stock }
         : {
             id: string,
             price: number,
             priceWithDiscount: number,
             title: string,
-            image: string
+            image: string,
+            stock: 0 | 1
         }) {
 
     const [counterProduct, setCounterProduct] = useState(1);
-    const { basket, addToBasket, removeFromBasket, totalPrice } = useBasketStore();
+    const { addToBasket } = useBasketStore();
 
 
     const minusCountHandler = () => {
@@ -41,31 +42,41 @@ function SideBarToBasketSticky(
             image,
             count: counterProduct
         })
+        setCounterProduct(1)
     }
 
     return (
         <div className="sticky top-24">
             {/* part top */}
             <div className='border border-[#D9D9D9] rounded-xl flex flex-col p-5'>
-                {/* price */}
-                <p className='line-through text-darknes'>{price.toLocaleString()} تومان</p>
-                <p className='text-2xl text-darknes pt-1'>{priceWithDiscount.toLocaleString()} تومان</p>
+                {stock === 1 ? (
+                    <>
+                        {/* price */}
+                        <p className='line-through text-darknes'>{price.toLocaleString()} تومان</p>
+                        <p className='text-2xl text-darknes pt-1'>{priceWithDiscount.toLocaleString()} تومان</p>
 
-                {/* add to basket */}
-                <div className='p-3 flex justify-between border border-[#D9D9D9] rounded-lg mt-3'>
-                    <button onClick={plusCountHandler} className='bg-[#D9D9D9]  p-2 rounded-full  flex items-center justify-center'>
-                        <FaPlus className='text-background text-sm' />
-                    </button>
-                    <span className='text-veronese text-xl'>{counterProduct}</span>
-                    <button onClick={minusCountHandler} className='bg-[#D9D9D9]  p-2 rounded-full  flex items-center justify-center'>
-                        <FaMinus className='text-background text-sm' />
-                    </button>
-                </div>
+                        {/* add to basket */}
+                        <div className='p-3 flex justify-between border border-[#D9D9D9] rounded-lg mt-3'>
+                            <button onClick={plusCountHandler} className='bg-[#D9D9D9]  p-2 rounded-full  flex items-center justify-center'>
+                                <FaPlus className='text-background text-sm' />
+                            </button>
+                            <span className='text-veronese text-xl'>{counterProduct}</span>
+                            <button onClick={minusCountHandler} className='bg-[#D9D9D9]  p-2 rounded-full  flex items-center justify-center'>
+                                <FaMinus className='text-background text-sm' />
+                            </button>
+                        </div>
 
-                <Button onClick={addToBasketHandler} className='text-background mt-3 h-12 rounded-xl text-xl' variant={"default"}>
-                    <MdAddShoppingCart />
-                    افزودن به سبد خرید
-                </Button>
+                        <Button onClick={addToBasketHandler} className='text-background mt-3 h-12 rounded-xl text-xl' variant={"default"}>
+                            <MdAddShoppingCart />
+                            افزودن به سبد خرید
+                        </Button>
+                    </>
+                ) : (
+                    <div className='mt-5'>
+                        <p className='text-red-500 text-center'>محصول ناموجود است</p>
+                    </div>
+                )}
+
             </div>
 
             {/* part two  */}

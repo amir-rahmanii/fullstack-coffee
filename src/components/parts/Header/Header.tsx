@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import { CiSearch } from "react-icons/ci";
 import { SideBarMobile } from '../../template/SideBarMobile/SideBarMobile';
@@ -11,9 +13,13 @@ import HeaderIcons from '@/components/modules/Icons/HeaderIcons/HeaderIcons';
 import { pathMenu } from '@/utils/pathMenu'
 import HeaderSubMenu from '@/components/modules/HeaderSubMenu/HeaderSubMenu';
 import Link from 'next/link';
+import { useBasketStore } from '@/store/useBasket';
 
 
 function Header() {
+
+  const { basket } = useBasketStore();
+
   return (
     <div className='fixed top-0 z-40 bg-background w-full pt-2.5 shadow-md rounded-md'>
       <div className='grid grid-cols-3 xl:grid-cols-5 items-center container'>
@@ -40,7 +46,7 @@ function Header() {
         <div className='hidden xl:block'>
           <ul className='flex items-center text-sm gap-8'>
             {/* show two items from pathMenu */}
-            {pathMenu.slice(0, 2).map((menu , index) => (
+            {pathMenu.slice(0, 2).map((menu, index) => (
               <HeaderSubMenu key={index} {...menu} />
             ))}
           </ul>
@@ -56,7 +62,7 @@ function Header() {
         <div className='hidden xl:block'>
           <ul className='flex items-center text-sm gap-6'>
             {/* show two items from pathMenu */}
-            {pathMenu.slice(2, 5).map((menu , index) => (
+            {pathMenu.slice(2, 5).map((menu, index) => (
               <HeaderSubMenu key={index} {...menu} />
             ))}
           </ul>
@@ -84,7 +90,10 @@ function Header() {
           <div className='hidden sm:block'>
             <CartSlide side="left">
               <HeaderIcons>
-                <RiShoppingBag3Line className='text-darknes text-lg' />
+                <div className='relative'>
+                  <RiShoppingBag3Line className='text-darknes text-lg' />
+                  <span className='bg-veronese p-1 text-xs w-5 h-5 text-lightnes absolute rounded-full right-2.5 bottom-2.5'>{basket.length}</span>
+                 </div>
               </HeaderIcons>
             </CartSlide>
           </div>

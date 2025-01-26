@@ -19,10 +19,10 @@ function ProductDetails({ product }: ProductDetailsProps) {
                     <div className='max-w-[427px]'>
                         <SliderProductGallary images={product.images} />
                     </div>
-                    <HeaderDescProduct 
-                    title={product.title}
-                    catgoryName = {product.category.title}
-                    weight = {product.weight}
+                    <HeaderDescProduct
+                        title={product.title}
+                        catgoryName={product.category.title}
+                        weight={product.weight}
                     />
                 </div>
                 <div className='flex items-center gap-6 mt-10 bg-lightnes rounded-xl p-3 text-darknes'>
@@ -35,6 +35,7 @@ function ProductDetails({ product }: ProductDetailsProps) {
             </div>
             <div className='col-span-2'>
                 <SideBarToBasketSticky
+                    stock={product.stock}
                     price={product.price}
                     priceWithDiscount={product.priceWithDiscount}
                     id={product._id}
