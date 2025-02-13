@@ -6,10 +6,9 @@ import { usePathname } from 'next/navigation';
 
 export type SideBarLeftProps = {
     showSidebarLeftMobile: boolean,
-    setShowSidebarLeftMobile: (value: boolean) => void,
 }
 
-function SideBarAdmin({ showSidebarLeftMobile, setShowSidebarLeftMobile }: SideBarLeftProps) {
+function SideBarAdmin({ showSidebarLeftMobile }: SideBarLeftProps) {
 
     const pathname = usePathname();
 

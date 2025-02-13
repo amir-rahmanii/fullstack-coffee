@@ -1,5 +1,3 @@
-"use client"
-
 import React from 'react'
 import { CiSearch } from "react-icons/ci";
 import { SideBarMobile } from '../../template/SideBarMobile/SideBarMobile';
@@ -7,18 +5,17 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import { bonManoIcon } from '@/components/icons/Svg/Svg';
 import { SearchBar } from '@/components/template/SearchBar/SearchBar';
 import CartSlide from '@/components/template/CartSlide/CartSlide';
-import { RiShoppingBag3Line } from 'react-icons/ri';
 import { FaRegHeart, FaRegUser } from 'react-icons/fa6';
 import HeaderIcons from '@/components/modules/Icons/HeaderIcons/HeaderIcons';
 import { pathMenu } from '@/utils/pathMenu'
 import HeaderSubMenu from '@/components/modules/HeaderSubMenu/HeaderSubMenu';
 import Link from 'next/link';
-import { useBasketStore } from '@/store/useBasket';
+import IconShoppingHeader from '@/components/template/IconShoppingHeader/IconShoppingHeader';
 
 
 function Header() {
 
-  const { basket } = useBasketStore();
+
 
   return (
     <div className='fixed top-0 z-40 bg-background w-full pt-2.5 shadow-md rounded-md'>
@@ -90,10 +87,7 @@ function Header() {
           <div className='hidden sm:block'>
             <CartSlide side="left">
               <HeaderIcons>
-                <div className='relative'>
-                  <RiShoppingBag3Line className='text-darknes text-lg' />
-                  <span className='bg-veronese p-1 text-xs w-5 h-5 text-lightnes absolute rounded-full right-2.5 bottom-2.5'>{basket.length}</span>
-                 </div>
+                <IconShoppingHeader />
               </HeaderIcons>
             </CartSlide>
           </div>

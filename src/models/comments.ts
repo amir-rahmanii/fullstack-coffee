@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const products = require("@/models/products")
 
 const commentSchema = new mongoose.Schema(
   {

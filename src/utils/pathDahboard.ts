@@ -1,4 +1,4 @@
-import { categoriesIcon, homeFill, productsIcon, usersIcon } from "@/components/icons/Svg/Svg";
+import { categoriesIcon, commentsIcon, homeFill, productsIcon, usersIcon } from "@/components/icons/Svg/Svg";
 
 
 export type MenuItemDashboard = {
@@ -27,5 +27,10 @@ export const pathMenuDashboard: MenuItemDashboard[] = [
         name: "دسته بندی محصولات",
         path: "/dashboard/category-products",
         img: categoriesIcon
+    },
+    {
+        name: "کامنت ها",
+        path: "/dashboard/comments",
+        img: commentsIcon
     },
 ];

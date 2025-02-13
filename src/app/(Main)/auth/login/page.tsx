@@ -1,9 +1,4 @@
 "use client";
-
-import { bonManoIcon } from '@/components/icons/Svg/Svg';
-import BottomBar from '@/components/parts/BottomBar/BottomBar';
-import Footer from '@/components/parts/Footer/Footer';
-import Header from '@/components/parts/Header/Header';
 import { BreadcrumbSection } from '@/components/modules/Breadcrumb/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
