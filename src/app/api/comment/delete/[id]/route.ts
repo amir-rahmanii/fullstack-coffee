@@ -1,6 +1,6 @@
 import ProductModel from "@/models/products"; // مدل کاربر
+import CommentModel from "@/models/comments"; // مدل دسته بندی
 import UserModel from "@/models/user"; // مدل کاربر
-import CommentModel from "@/models/comments"; // مدل کامنت
 import connectToDB from "@/configs/db"; // متصل شدن به دیتابیس
 import { NextRequest } from "next/server"; // نوع درخواست Next.js
 import { cookies } from "next/headers"; // مدیریت کوکی‌ها
@@ -41,20 +41,16 @@ export const DELETE = async (req: NextRequest, {
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        // حذف کاربر از دیتابیس
-        const deleteProduct = await ProductModel.findOneAndDelete({ _id: id });
-        
-        // حذف تمامی کامنت‌های مرتبط با محصول
-        await CommentModel.deleteMany({ product: id });
+        const deleteComment = await CommentModel.findOneAndDelete({ _id: id });
 
-        // اگر کاربر یافت نشد
-        if (!deleteProduct) {
-            return Response.json({ message: "محصول یافت نشد" }, { status: 404 });
+
+        if (!deleteComment) {
+            return Response.json({ message: "کامنت یافت نشد" }, { status: 404 });
         }
 
         // بازگشت پاسخ موفقیت‌آمیز
         return Response.json(
-            { message: "محصول با موفقیت حذف شد" },
+            { message: "کامنت با موفقیت حذف شد" },
             { status: 200 }
         );
     } catch (err) {

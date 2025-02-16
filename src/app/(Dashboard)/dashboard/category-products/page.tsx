@@ -24,6 +24,7 @@ export default function Users() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isShowDeleteCategoryProductModal, setIsShowDeleteCategoryProductModal] = useState(false);
 
   // ساخت Query String برای جستجو
   const createQueryString = useCallback(
@@ -42,7 +43,7 @@ export default function Users() {
 
   const { deleteItem, isMutating } = useDelete("/api/category-product/delete", {
     onSuccess: () => {
-      alert("Item deleted successfully!");
+      setIsShowDeleteCategoryProductModal(false);
       mutate();
     },
     onError: (error) => alert(`Error: ${error.message}`),
@@ -105,6 +106,8 @@ export default function Users() {
                 <td className="py-[18px]  px-2 lg:px-1">
                   <div className="flex items-center justify-center gap-2">
                     <ModalYesOrNoAdmin
+                      isOpenModal={isShowDeleteCategoryProductModal}
+                      setIsOpenModal={setIsShowDeleteCategoryProductModal}
                       isMutating={isMutating}
                       isAttention={true}
                       submitHandler={() => handleDeleteCategoryProduct(category._id)}

@@ -49,8 +49,6 @@ function UpdateProductAdmin({ product, setIsOpenUpdateModal }: UpdateProductAdmi
     }, [product.images]);
 
 
-    console.log(product);
-    
 
 
     const { mutate: mutateUpdateProduct, isMutating } = usePostOrPut(

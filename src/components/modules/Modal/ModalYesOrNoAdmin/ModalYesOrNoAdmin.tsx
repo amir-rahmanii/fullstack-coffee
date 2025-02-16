@@ -14,6 +14,8 @@ import Image from 'next/image'
 import LoadingSpinner from '../../LoadingBox/LoadingSpinner'
 
 type ModalProps = {
+    isOpenModal : boolean,
+    setIsOpenModal : (value : boolean) => void,
     title?: string,
     submitHandler?: () => void,
     isAttention?: boolean,
@@ -24,6 +26,8 @@ type ModalProps = {
 }
 
 function ModalYesOrNoAdmin({
+    isOpenModal,
+    setIsOpenModal,
     isMutating,
     isAttention,
     children,
@@ -32,7 +36,7 @@ function ModalYesOrNoAdmin({
     submitHandler
 }: ModalProps) {
     return (
-        <Dialog>
+        <Dialog open={isOpenModal} onOpenChange={setIsOpenModal}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>

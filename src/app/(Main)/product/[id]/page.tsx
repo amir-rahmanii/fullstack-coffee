@@ -20,25 +20,24 @@ async function Product({
   await connectToDB();
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    notFound();
+    return notFound();
   }
 
-  const product: ProductTypes | null = await productsModel.findById(id, "-__v -updatedAt")
-    .populate("category").lean();
+  const product: ProductTypes | null = await productsModel
+  .findById(id, "-__v -updatedAt")
+  .populate("category")
+  .lean();
 
     const comments: CommentType[] | [] = await commentsModel
     .find({ isActive: true }, "-__v -updatedAt")
     .lean();
 
-  if (product) {
-    product._id = product._id.toString();
-  }
-
-
 
   if (!product) {
-    notFound();
+    return notFound();
   }
+
+  product._id = product._id.toString();
 
 
   return (

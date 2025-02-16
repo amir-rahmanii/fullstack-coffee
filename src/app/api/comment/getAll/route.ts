@@ -1,25 +1,20 @@
-import ProductModel from "@/models/products"; // مدل کاربر
-import UserModel from "@/models/user"; // مدل کاربر
-import CommentModel from "@/models/comments"; // مدل کامنت
-import connectToDB from "@/configs/db"; // متصل شدن به دیتابیس
-import { NextRequest } from "next/server"; // نوع درخواست Next.js
-import { cookies } from "next/headers"; // مدیریت کوکی‌ها
+import connectToDB from "@/configs/db";
 import { verifyToken } from "@/utils/auth";
+import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
+import UserModel from "@/models/user";
+import commentModel from "@/models/comments";
 
-export const DELETE = async (req: NextRequest, {
-    params,
-}: {
-    params: Promise<{ id: string }>
-}) => {
+export const GET = async (req: NextRequest) => {
     try {
         // اتصال به دیتابیس
         await connectToDB();
 
-        const { id } = await params;
-
-
         const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
         const accessToken = cookieStore.get('accessToken')?.value;
+        // دریافت فایل‌ها از درخواست (با استفاده از async/await)
+
+        const searchQuery = req.nextUrl.searchParams.get("search") || "";
 
         // بررسی توکن
         if (!accessToken) {
@@ -41,20 +36,24 @@ export const DELETE = async (req: NextRequest, {
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        // حذف کاربر از دیتابیس
-        const deleteProduct = await ProductModel.findOneAndDelete({ _id: id });
-        
-        // حذف تمامی کامنت‌های مرتبط با محصول
-        await CommentModel.deleteMany({ product: id });
+        const filterCondition = searchQuery
+        ? {
+              $or: [
+                  { name: { $regex: searchQuery, $options: "i" } },
+                  { email: { $regex: searchQuery, $options: "i" } },
+                  { description: { $regex: searchQuery, $options: "i" } },
+              ],
+          }
+        : {};
 
-        // اگر کاربر یافت نشد
-        if (!deleteProduct) {
-            return Response.json({ message: "محصول یافت نشد" }, { status: 404 });
-        }
+
+        const allCommentsProduct = await commentModel.find(filterCondition, "-__v -updatedAt").populate("product")
+
+
 
         // بازگشت پاسخ موفقیت‌آمیز
         return Response.json(
-            { message: "محصول با موفقیت حذف شد" },
+            allCommentsProduct,
             { status: 200 }
         );
     } catch (err) {

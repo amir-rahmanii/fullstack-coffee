@@ -38,7 +38,7 @@ export default function Products() {
 
   const [activeProduct, setActiveProduct] = useState<ProductTypes | null>(null);
   const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
-
+  const [isShowDeleteProductModal , setIsShowDeleteProductModal]= useState(false);
 
 
 
@@ -56,7 +56,7 @@ export default function Products() {
 
   const { deleteItem, isMutating } = useDelete("/api/product/delete", {
     onSuccess: () => {
-      alert("محصول با موفقیت حذف شد");
+      setIsShowDeleteProductModal(false);
       mutate(); // بازخوانی محصولات
     },
     onError: (error) => alert(`خطا: ${error.message}`),
@@ -187,6 +187,8 @@ export default function Products() {
 
                     {/* delete product */}
                     <ModalYesOrNoAdmin
+                      isOpenModal={isShowDeleteProductModal}
+                      setIsOpenModal={setIsShowDeleteProductModal}
                       isMutating={isMutating}
                       isAttention={true}
                       submitHandler={() => handleDeleteProduct(product._id)}

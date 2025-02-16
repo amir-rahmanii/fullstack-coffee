@@ -25,6 +25,7 @@ export default function Users() {
   const { updateQueryString } = useQueryString();
   const searchParams = useSearchParams();
   const currentSearch = searchParams?.get("search") || "";
+  const [isShowDeleteProductModal, setIsShowDeleteProductModal] = useState(false);
 
   // دریافت کاربران با استفاده از SWR
   const { data: users, mutate, error, isLoading } = useSWR<UserType[]>(
@@ -100,6 +101,8 @@ export default function Users() {
                   <div className="flex items-center justify-center gap-2">
                     {user.username !== "Amirreza" && (
                       <ModalYesOrNoAdmin
+                        isOpenModal={isShowDeleteProductModal}
+                        setIsOpenModal={setIsShowDeleteProductModal}
                         isMutating={isMutating}
                         isAttention={true}
                         submitHandler={() => handleDeleteUser(user._id)}

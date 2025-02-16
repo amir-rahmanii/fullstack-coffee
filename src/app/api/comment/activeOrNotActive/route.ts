@@ -1,23 +1,20 @@
 import ProductModel from "@/models/products"; // مدل کاربر
+import CommentModel from "@/models/comments"; // مدل دسته بندی
 import UserModel from "@/models/user"; // مدل کاربر
-import CommentModel from "@/models/comments"; // مدل کامنت
 import connectToDB from "@/configs/db"; // متصل شدن به دیتابیس
 import { NextRequest } from "next/server"; // نوع درخواست Next.js
 import { cookies } from "next/headers"; // مدیریت کوکی‌ها
 import { verifyToken } from "@/utils/auth";
 
-export const DELETE = async (req: NextRequest, {
-    params,
-}: {
-    params: Promise<{ id: string }>
-}) => {
+export const PUT = async (req: NextRequest) => {
     try {
         // اتصال به دیتابیس
         await connectToDB();
 
-        const { id } = await params;
+        const {commentId} = await req.json();
 
-
+        console.log("Comment ID received in API:", commentId);
+        
         const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
         const accessToken = cookieStore.get('accessToken')?.value;
 
@@ -41,20 +38,22 @@ export const DELETE = async (req: NextRequest, {
             return Response.json({ message: "دسترسی به این بخش برای شما مجاز نیست" }, { status: 403 });
         }
 
-        // حذف کاربر از دیتابیس
-        const deleteProduct = await ProductModel.findOneAndDelete({ _id: id });
-        
-        // حذف تمامی کامنت‌های مرتبط با محصول
-        await CommentModel.deleteMany({ product: id });
+        const comment = await CommentModel.findOne({ _id: commentId });
+        const commentUpdated = await CommentModel.findOneAndUpdate(
+            { _id: commentId },
+            { $set: { isActive: !comment.isActive } },
+            { new: true }
+        );
 
-        // اگر کاربر یافت نشد
-        if (!deleteProduct) {
-            return Response.json({ message: "محصول یافت نشد" }, { status: 404 });
+        if (!commentUpdated) {
+            return Response.json({ message: "کامنت یافت نشد" }, { status: 404 });
         }
 
         // بازگشت پاسخ موفقیت‌آمیز
         return Response.json(
-            { message: "محصول با موفقیت حذف شد" },
+            { message: `کامنت با موفقیت
+                ${commentUpdated.isActive ? "تایید" : "رد"}
+               شد ` },
             { status: 200 }
         );
     } catch (err) {
