@@ -24,12 +24,12 @@ async function Product({
   }
 
   const product: ProductTypes | null = await productsModel
-  .findById(id, "-__v -updatedAt")
-  .populate("category")
-  .lean();
+    .findById(id, "-__v -updatedAt")
+    .populate("category")
+    .lean();
 
-    const comments: CommentType[] | [] = await commentsModel
-    .find({ isActive: true }, "-__v -updatedAt")
+  const comments: CommentType[] | [] = await commentsModel
+    .find({ product : id ,isActive: true }, "-__v -updatedAt")
     .lean();
 
 

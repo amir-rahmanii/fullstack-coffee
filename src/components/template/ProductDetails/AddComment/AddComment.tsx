@@ -49,7 +49,7 @@ function AddComment({ productId }: { productId: string }) {
     return (
         <div className='w-full my-10'>
             <form onSubmit={handleSubmit(onSubmit)} className='w-full flex flex-col gap-4'>
-                <div className='flex w-full justify-between gap-4'>
+                <div className='flex flex-col md:flex-row w-full justify-between gap-4'>
                     <div className="flex flex-col w-full">
                         <label htmlFor="name">نام
                             <span className="required text-red-500">*</span>

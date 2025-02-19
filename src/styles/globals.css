@@ -14,6 +14,10 @@
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.48);
     clip-path: inset(0 -100vmax -100vmax -100vmax);
   }
+
+  .link-default {
+    @apply h-10 px-4 py-2 bg-veronese text-background hover:bg-goldnes rounded-3xl;
+  }
 }
 
 

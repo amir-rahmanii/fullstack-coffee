@@ -34,7 +34,7 @@ export default function Users() {
 
   const { deleteItem, isMutating } = useDelete("/api/user/delete", {
     onSuccess: () => {
-      alert("Item deleted successfully!");
+      setIsShowDeleteProductModal(false)
       mutate(); // بازخوانی لیست کاربران پس از حذف
     },
     onError: (error) => alert(`Error: ${error.message}`),

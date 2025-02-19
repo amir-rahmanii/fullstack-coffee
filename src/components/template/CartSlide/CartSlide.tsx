@@ -10,10 +10,9 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Button } from '@/components/ui/button';
 import CartProduct from '@/components/modules/Product/CartProduct/CartProduct';
 import { useBasketStore } from '@/store/useBasket';
-
+import Link from 'next/link';
 
 type SheetSideProps = {
     side: "top" | "right" | "bottom" | "left",
@@ -60,16 +59,21 @@ export function CartSlide({ side, children }: SheetSideProps) {
                     <SheetFooter>
                         <SheetClose asChild>
                         </SheetClose>
-                    </SheetFooter>
-                        <div className='flex flex-col items-center justify-center gap-[15px] mt-[15px]'>
-                            <div className='flex justify-center gap-2'>
-                                <span className='text-[#aaaaaa]'>مبلغ قابل پرداخت :</span>
-                                <span className='text-veronese text-xl'>{totalPrice.toLocaleString()} تومان</span>
+                        {basket.length ? (
+                            <div className='flex flex-col items-center justify-center gap-[15px] mt-[15px]'>
+                                <div className='flex justify-center gap-2'>
+                                    <span className='text-[#aaaaaa]'>مبلغ قابل پرداخت :</span>
+                                    <span className='text-veronese text-xl'>{totalPrice.toLocaleString()} تومان</span>
+                                </div>
+                                <SheetClose asChild>
+                                    <Link href="/cart" className="link-default">
+                                        مشاهده سبد خرید
+                                    </Link>
+                                </SheetClose>
+
                             </div>
-                            <Button size="default" variant="default">
-                                مشاهده سبد خرید
-                            </Button>
-                        </div>
+                        ) : ""}
+                    </SheetFooter>
                 </SheetContent>
             </Sheet>
         </div>

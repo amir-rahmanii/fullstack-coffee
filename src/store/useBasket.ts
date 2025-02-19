@@ -15,6 +15,7 @@ interface BasketState {
     totalPrice: number;
     addToBasket: (data: BasketItem) => void;
     removeFromBasket: (title: string, itemId: string) => void;
+    minusCountFromProduct : (id : string) => void;
 }
 
 export const useBasketStore = create<BasketState>()(
@@ -53,7 +54,32 @@ export const useBasketStore = create<BasketState>()(
             totalPrice: updatedTotalPrice,
           };
         }),
-
+        minusCountFromProduct:(id : string) =>
+          set((state) => {
+            // بررسی وجود محصول در سبد
+            const existingProductIndex = state.basket.findIndex((item) => item.id === id);
+  
+            let updatedBasket;
+            if (existingProductIndex !== -1) {
+              // به‌روزرسانی تعداد محصول در صورت وجود
+              updatedBasket = state.basket.map((item, index) =>
+                index === existingProductIndex
+                  ? { ...item, count: item.count - 1 }
+                  : item
+              );
+            } else {
+              // افزودن محصول جدید به سبد
+              updatedBasket = [...state.basket];
+            }
+  
+            const updatedTotalPrice = calculateTotalPrice(updatedBasket);
+  
+  
+            return {
+              basket: updatedBasket,
+              totalPrice: updatedTotalPrice,
+            };
+          }),
       removeFromBasket: (title: string, itemId: string) =>
         set((state) => {
           const updatedBasket = state.basket.filter((item) => item.id !== itemId);
