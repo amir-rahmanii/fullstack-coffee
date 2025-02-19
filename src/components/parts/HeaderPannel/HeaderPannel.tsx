@@ -1,16 +1,13 @@
+"use client";
 
 import Image from 'next/image'
 import { MenuIcon, messageOutline } from '@/components/icons/Svg/Svg'
+import { useShowSideBarMobilePannel } from '@/store/useShowSideBarMobilePannel';
 
 
-type HeaderAdminProps = {
-    showSidebarLeftMobile : boolean ,
-    setShowSidebarLeftMobile : (value : boolean) => void
-}
+function HeaderPannel() {
 
-
-
-function HeaderAdmin({setShowSidebarLeftMobile, showSidebarLeftMobile }: HeaderAdminProps) {
+    const { isShowSideBarMobilePannel , updateIsShowSideBarMobilePannel } = useShowSideBarMobilePannel();
 
 
     return (
@@ -18,7 +15,7 @@ function HeaderAdmin({setShowSidebarLeftMobile, showSidebarLeftMobile }: HeaderA
             <div className='font-sans z-40 fixed top-0 right-0 w-full md:w-[calc(100%-100px)]  lg:w-[calc(100%-200px)] xl:w-[calc(100%-290px)] left-0 md:right-[100px] lg:right-[200px] xl:right-[290px] px-4 md:px-11 py-2 md:py-4 flex items-center bg-admin-navy'>
                 <div className='flex w-full items-center justify-between'>
                     <p className='hidden md:block'>به ادمین پنل خوش آمدید❤️</p>
-                    <button onClick={() => setShowSidebarLeftMobile(!showSidebarLeftMobile)} className='bg-[#313D4A] block md:hidden p-2 rounded'>
+                    <button onClick={() => updateIsShowSideBarMobilePannel(!isShowSideBarMobilePannel)} className='bg-[#313D4A] block md:hidden p-2 rounded'>
                         <div className='w-5 h-5 text-white'>
                             {MenuIcon}
                         </div>
@@ -50,10 +47,10 @@ function HeaderAdmin({setShowSidebarLeftMobile, showSidebarLeftMobile }: HeaderA
             </div>
 
             {/*black side for menu mobile */}
-            <div onClick={() => setShowSidebarLeftMobile(false)} className={`bg-black/40 md:hidden fixed inset-0 w-full h-full z-[41] transition-all ${showSidebarLeftMobile ? 'visible opacity-100' : 'invisible opacity-0'}`}></div>
+            <div onClick={() => updateIsShowSideBarMobilePannel(false)} className={`bg-black/40 md:hidden fixed inset-0 w-full h-full z-[41] transition-all ${isShowSideBarMobilePannel ? 'visible opacity-100' : 'invisible opacity-0'}`}></div>
 
         </>
     )
 }
 
-export default HeaderAdmin
+export default HeaderPannel

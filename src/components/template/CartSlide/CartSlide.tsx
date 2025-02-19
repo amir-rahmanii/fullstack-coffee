@@ -70,7 +70,6 @@ export function CartSlide({ side, children }: SheetSideProps) {
                                         مشاهده سبد خرید
                                     </Link>
                                 </SheetClose>
-
                             </div>
                         ) : ""}
                     </SheetFooter>

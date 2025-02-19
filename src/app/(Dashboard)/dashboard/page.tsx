@@ -15,7 +15,6 @@ function Index() {
     "/api/countData"
   );
 
-  console.log(counts);
 
   if (error) {
     return (

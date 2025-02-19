@@ -1,16 +1,18 @@
+"use client";
 
 import Link from 'next/link'
 import { bonManoIcon, closeIcon } from '@/components/icons/Svg/Svg'
 import { pathMenuDashboard } from '@/utils/pathDahboard';
 import { usePathname } from 'next/navigation';
+import { useShowSideBarMobilePannel } from '@/store/useShowSideBarMobilePannel';
 
-export type SideBarLeftProps = {
-    showSidebarLeftMobile: boolean,
-}
 
-function SideBarAdmin({ showSidebarLeftMobile }: SideBarLeftProps) {
+
+function SideBarPannel() {
 
     const pathname = usePathname();
+    const { isShowSideBarMobilePannel } = useShowSideBarMobilePannel();
+
 
     return (
         <>
@@ -42,8 +44,8 @@ function SideBarAdmin({ showSidebarLeftMobile }: SideBarLeftProps) {
                 </div>
             </div>
 
-            {showSidebarLeftMobile && (
-                <div className={`transition-all md:hidden z-50 bg-admin-black font-medium duration-300 fixed top-0 bottom-0 w-[280px] p-5 overflow-y-auto ${showSidebarLeftMobile ? 'left-0' : '-left-[280px]'}`}>
+            {isShowSideBarMobilePannel && (
+                <div className={`transition-all md:hidden z-50 bg-admin-black font-medium duration-300 fixed top-0 bottom-0 w-[280px] p-5 overflow-y-auto ${isShowSideBarMobilePannel ? 'left-0' : '-left-[280px]'}`}>
                     <div className='flex bg-white/5 rounded-2xl justify-center items-center pt-2'>
                         <Link className='w-24 h-24' href="/">
                             {bonManoIcon}
@@ -72,4 +74,4 @@ function SideBarAdmin({ showSidebarLeftMobile }: SideBarLeftProps) {
     )
 }
 
-export default SideBarAdmin
+export default SideBarPannel

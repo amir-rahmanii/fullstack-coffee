@@ -3,7 +3,7 @@ import HeaderPannel from '@/components/parts/HeaderPannel/HeaderPannel';
 import SideBarPannel from '@/components/parts/SideBarPannel/SideBarPannel';
 import React from 'react'
 
-function LayOutDashboard({
+function LayOutAccount({
     children,
 }: Readonly<{
     children: React.ReactNode;
@@ -22,4 +22,4 @@ function LayOutDashboard({
     )
 }
 
-export default LayOutDashboard
+export default LayOutAccount
