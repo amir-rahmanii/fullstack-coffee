@@ -1,14 +1,17 @@
 "use client";
 
 import Link from 'next/link'
-import { bonManoIcon, closeIcon } from '@/components/icons/Svg/Svg'
-import { pathMenuDashboard } from '@/utils/pathDahboard';
+import { bonManoIcon } from '@/components/icons/Svg/Svg'
+import { MenuItemDashboard } from '@/utils/pathDahboard';
 import { usePathname } from 'next/navigation';
 import { useShowSideBarMobilePannel } from '@/store/useShowSideBarMobilePannel';
 
 
 
-function SideBarPannel() {
+
+
+
+function SideBarPannel({pathMenu} : {pathMenu : MenuItemDashboard[]}) {
 
     const pathname = usePathname();
     const { isShowSideBarMobilePannel } = useShowSideBarMobilePannel();
@@ -27,7 +30,7 @@ function SideBarPannel() {
                 <div className='mt-9'>
                     <p className='text-admin-High text-center lg:text-start lg:px-6 mb-2 text-sm'>فهرست</p>
                     <ul className='flex flex-col gap-3'>
-                        {pathMenuDashboard.map(menu => (
+                        {pathMenu.map(menu => (
                             <li key={menu.path}>
                                 <Link href={menu.path} className={`
                                 flex items-center  gap-2 py-2 px-4 text-admin-low rounded transition-all duration-300 hover:bg-[#313D4A]
@@ -53,7 +56,7 @@ function SideBarPannel() {
                     </div>
 
                     <ul className='flex flex-col gap-5'>
-                        {pathMenuDashboard.map(menu => (
+                        {pathMenu.map(menu => (
                             <li key={menu.path}>
                                 <Link href='panel' className={`
                                   flex items-center  gap-2 py-2 px-4 text-admin-low rounded transition-all duration-300 hover:bg-[#313D4A]

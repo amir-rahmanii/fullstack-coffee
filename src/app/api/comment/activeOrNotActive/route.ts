@@ -13,7 +13,6 @@ export const PUT = async (req: NextRequest) => {
 
         const {commentId} = await req.json();
 
-        console.log("Comment ID received in API:", commentId);
         
         const cookieStore = await cookies(); // برای مدیریت کوکی‌ها
         const accessToken = cookieStore.get('accessToken')?.value;
